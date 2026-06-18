@@ -3,33 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>교육과정 평가회 Feel Score</title>
+  <title>Feel Score</title>
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #f5f6fa;
       color: #222;
     }
+
     header {
       background: linear-gradient(135deg, #273c75, #40739e);
       color: white;
-      padding: 28px 18px;
+      padding: 30px 18px;
       text-align: center;
     }
-    header h1 { margin: 0 0 8px; font-size: 28px; }
-    header p { margin: 0; opacity: 0.9; }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+      letter-spacing: 0.5px;
+    }
+
+    header p {
+      margin: 0;
+      opacity: 0.95;
+      font-size: 17px;
+    }
+
     main {
       max-width: 960px;
       margin: 24px auto;
       padding: 0 16px 40px;
     }
+
     .tabs {
       display: flex;
       gap: 8px;
       margin-bottom: 16px;
     }
+
     .tabs button {
       flex: 1;
       padding: 14px;
@@ -37,13 +52,15 @@
       border-radius: 12px;
       background: #dcdde1;
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
     }
+
     .tabs button.active {
       background: #273c75;
       color: white;
     }
+
     .card {
       background: white;
       border-radius: 18px;
@@ -51,14 +68,21 @@
       box-shadow: 0 8px 24px rgba(0,0,0,0.08);
       margin-bottom: 16px;
     }
+
     .hidden { display: none; }
-    h2 { margin: 0 0 16px; }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: 23px;
+    }
+
     label {
       display: block;
-      font-weight: 700;
+      font-weight: 800;
       margin: 14px 0 6px;
     }
-    input, textarea, select {
+
+    input, textarea {
       width: 100%;
       padding: 13px 14px;
       border: 1px solid #dcdde1;
@@ -66,11 +90,14 @@
       font-size: 16px;
       background: white;
     }
+
     textarea {
-      min-height: 110px;
+      min-height: 120px;
       resize: vertical;
+      line-height: 1.5;
     }
-    button.primary, button.secondary, button.danger {
+
+    button.primary, button.secondary, button.danger, button.gray {
       width: 100%;
       padding: 14px;
       border: 0;
@@ -80,29 +107,40 @@
       font-weight: 800;
       cursor: pointer;
     }
+
     button.primary { background: #273c75; color: white; }
     button.secondary { background: #44bd32; color: white; }
     button.danger { background: #c23616; color: white; }
+    button.gray { background: #718093; color: white; }
+
     button:disabled {
       opacity: 0.55;
       cursor: not-allowed;
     }
+
     .row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
+
     .score-box {
       display: flex;
       gap: 12px;
       align-items: center;
     }
-    .score-box input[type="range"] { flex: 1; }
+
+    .score-box input[type="range"] {
+      flex: 1;
+      accent-color: #273c75;
+    }
+
     .score-number {
       width: 96px;
       text-align: center;
-      font-weight: 800;
+      font-weight: 900;
     }
+
     .notice {
       padding: 12px 14px;
       border-radius: 12px;
@@ -110,61 +148,76 @@
       background: #f1f2f6;
       line-height: 1.5;
     }
+
     .success { background: #eaf8e6; color: #207a16; }
     .error { background: #fdecea; color: #a11a0a; }
+    .info { background: #e8f4ff; color: #14558f; }
     .muted { color: #666; font-size: 14px; }
+
     .stats {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
       margin: 14px 0;
     }
+
     .stat {
       background: #f1f2f6;
       border-radius: 14px;
       padding: 14px;
       text-align: center;
     }
+
     .stat strong {
       display: block;
       font-size: 24px;
       margin-top: 4px;
       color: #273c75;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 14px;
       font-size: 14px;
     }
+
     th, td {
       border-bottom: 1px solid #eee;
       padding: 10px 8px;
       vertical-align: top;
       text-align: left;
     }
+
     th {
       background: #f5f6fa;
-      font-weight: 800;
+      font-weight: 900;
     }
+
     .opinion-cell {
       max-width: 420px;
       white-space: pre-wrap;
       word-break: keep-all;
     }
+
     .pill {
       display: inline-block;
       padding: 4px 9px;
       border-radius: 999px;
       background: #dff9fb;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
     }
+
     .copy-line {
       display: flex;
       gap: 8px;
     }
-    .copy-line input { flex: 1; }
+
+    .copy-line input {
+      flex: 1;
+    }
+
     .copy-line button {
       width: 110px;
       border: 0;
@@ -174,19 +227,39 @@
       font-weight: 800;
       cursor: pointer;
     }
+
     @media (max-width: 680px) {
-      .row, .stats { grid-template-columns: 1fr; }
-      header h1 { font-size: 23px; }
-      .card { padding: 18px; }
-      table { font-size: 13px; }
-      th:nth-child(1), td:nth-child(1) { display: none; }
+      .row, .stats {
+        grid-template-columns: 1fr;
+      }
+
+      header h1 {
+        font-size: 27px;
+      }
+
+      header p {
+        font-size: 15px;
+      }
+
+      .card {
+        padding: 18px;
+      }
+
+      table {
+        font-size: 13px;
+      }
+
+      th:nth-child(1), td:nth-child(1) {
+        display: none;
+      }
     }
   </style>
 </head>
+
 <body>
   <header>
-    <h1>교육과정 평가회 Feel Score</h1>
-    <p>학생 의견과 점수를 회차별로 실시간 수집합니다.</p>
+    <h1>Feel Score</h1>
+    <p>당신의 기분을 점수로 표현해주세요.</p>
   </header>
 
   <main>
@@ -197,12 +270,10 @@
 
     <section id="studentPage" class="card">
       <h2>학생용 입력</h2>
-      <div class="notice">
-        현재 회차에 대한 나의 느낌 점수와 의견을 입력하세요.
-      </div>
 
-      <label for="studentSession">회차 코드</label>
-      <input id="studentSession" placeholder="예: S260618-1" />
+      <div id="studentStatus" class="notice info">
+        현재 입력 가능한 회차를 확인하고 있습니다.
+      </div>
 
       <label for="nickname">닉네임</label>
       <input id="nickname" maxlength="20" placeholder="예: 6학년 김OO, 별명 등" />
@@ -214,9 +285,10 @@
       </div>
 
       <label for="opinion">의견</label>
-      <textarea id="opinion" maxlength="500" placeholder="좋았던 점, 아쉬웠던 점, 바라는 점을 자유롭게 적으세요."></textarea>
+      <textarea id="opinion" maxlength="500" placeholder="오늘의 기분, 좋았던 점, 아쉬웠던 점, 바라는 점을 자유롭게 적으세요."></textarea>
 
       <button class="primary" id="submitBtn" onclick="submitResponse()">제출하기</button>
+
       <div id="studentMessage"></div>
     </section>
 
@@ -227,8 +299,9 @@
         <label for="adminPassword">관리자 비밀번호</label>
         <input id="adminPassword" type="password" placeholder="비밀번호 입력" />
         <button class="primary" onclick="loginTeacher()">관리자 입장</button>
+
         <div class="notice muted">
-          현재 버전은 GitHub Pages용 클라이언트 앱입니다. 비밀번호는 화면 잠금 용도이며 완전한 보안 기능은 아닙니다.
+          이 버전은 GitHub Pages용 클라이언트 앱입니다. 관리자 비밀번호는 화면 잠금용이며 완전한 보안 기능은 아닙니다.
         </div>
       </div>
 
@@ -239,18 +312,23 @@
             <input id="sessionTitle" placeholder="예: 1학기 교육과정 평가회" />
           </div>
           <div>
-            <label for="sessionIdInput">현재 회차 코드</label>
-            <input id="sessionIdInput" placeholder="회차를 만들거나 직접 입력" />
+            <label for="sessionIdInput">교사용 회차 코드</label>
+            <input id="sessionIdInput" placeholder="회차를 만들거나 조회할 코드" />
           </div>
         </div>
 
         <button class="secondary" onclick="createSession()">새 회차 만들고 활성화</button>
         <button class="primary" onclick="loadSession()">이 회차 결과 보기</button>
+        <button class="gray" onclick="setActiveSessionFromInput()">이 회차를 학생 입력 회차로 설정</button>
 
-        <label>학생 접속용 링크</label>
+        <label>학생 접속용 고정 링크</label>
         <div class="copy-line">
           <input id="studentLink" readonly />
           <button onclick="copyStudentLink()">복사</button>
+        </div>
+
+        <div id="activeSessionInfo" class="notice info">
+          현재 활성화된 회차를 확인하고 있습니다.
         </div>
 
         <div class="stats">
@@ -290,31 +368,28 @@
       getDatabase,
       ref,
       set,
-      push,
-      onValue,
       get,
       remove,
-      serverTimestamp
+      onValue,
+      runTransaction
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    // 1. Firebase 콘솔에서 복사한 설정값으로 아래 내용을 바꾸세요.
-    // 2. databaseURL은 Realtime Database 주소를 꼭 넣어야 합니다.
-const firebaseConfig = {
-  apiKey: "AIzaSyCgfrteyldCIvs36ZPdQZ_ULqBCVNazxcc",
-  authDomain: "feel-score.firebaseapp.com",
-  databaseURL: "https://feel-score-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "feel-score",
-  storageBucket: "feel-score.firebasestorage.app",
-  messagingSenderId: "116602893330",
-  appId: "1:116602893330:web:6ea3c8d854ef715152d4cb"
-};
-
+    const firebaseConfig = {
+      apiKey: "AIzaSyCgfrteyldCIvs36ZPdQZ_ULqBCVNazxcc",
+      authDomain: "feel-score.firebaseapp.com",
+      databaseURL: "https://feel-score-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "feel-score",
+      storageBucket: "feel-score.firebasestorage.app",
+      messagingSenderId: "116602893330",
+      appId: "1:116602893330:web:6ea3c8d854ef715152d4cb"
+    };
 
     const ADMIN_PASSWORD = "6185";
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
+    let activeSessionId = "";
     let currentRows = [];
     let unsubscribeResults = null;
 
@@ -327,8 +402,21 @@ const firebaseConfig = {
       $("teacherTab").classList.toggle("active", page === "teacher");
     };
 
+    function fixedStudentUrl() {
+      return location.origin + location.pathname;
+    }
+
     function cleanText(text, maxLength) {
       return String(text || "").trim().slice(0, maxLength);
+    }
+
+    function makeSafeKey(text) {
+      return String(text || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[.#$/[\]]/g, "_")
+        .replace(/\s+/g, "_")
+        .slice(0, 50);
     }
 
     function makeSessionId() {
@@ -354,11 +442,20 @@ const firebaseConfig = {
       });
     }
 
+    function escapeHTML(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
     function showMessage(targetId, message, type = "success") {
       $(targetId).innerHTML = `<div class="notice ${type}">${message}</div>`;
       setTimeout(() => {
         $(targetId).innerHTML = "";
-      }, 3500);
+      }, 4000);
     }
 
     function updateScore(value) {
@@ -368,29 +465,50 @@ const firebaseConfig = {
       $("scoreText").textContent = score;
     }
 
+    function submittedStorageKey(sessionId) {
+      return `feelScoreSubmitted_${sessionId}`;
+    }
+
     $("scoreRange").addEventListener("input", (e) => updateScore(e.target.value));
     $("scoreNumber").addEventListener("input", (e) => updateScore(e.target.value));
 
     window.submitResponse = async function() {
-      const sessionId = cleanText($("studentSession").value, 40);
+      const sessionId = activeSessionId;
       const nickname = cleanText($("nickname").value, 20);
       const opinion = cleanText($("opinion").value, 500);
       const score = Number($("scoreNumber").value);
 
       if (!sessionId) {
-        showMessage("studentMessage", "회차 코드가 필요합니다.", "error");
+        showMessage("studentMessage", "아직 입력 가능한 회차가 열려 있지 않습니다. 선생님께 확인하세요.", "error");
         return;
       }
+
       if (!nickname) {
         showMessage("studentMessage", "닉네임을 입력하세요.", "error");
         return;
       }
+
       if (Number.isNaN(score) || score < 0 || score > 100) {
         showMessage("studentMessage", "점수는 0~100 사이로 입력하세요.", "error");
         return;
       }
+
       if (!opinion) {
         showMessage("studentMessage", "의견을 입력하세요.", "error");
+        return;
+      }
+
+      const localKey = submittedStorageKey(sessionId);
+
+      if (localStorage.getItem(localKey)) {
+        showMessage("studentMessage", "이 기기에서는 이미 제출했습니다. 중복 제출은 할 수 없습니다.", "error");
+        return;
+      }
+
+      const safeNickname = makeSafeKey(nickname);
+
+      if (!safeNickname) {
+        showMessage("studentMessage", "닉네임에 사용할 수 없는 문자가 많습니다. 다른 닉네임을 입력하세요.", "error");
         return;
       }
 
@@ -398,25 +516,41 @@ const firebaseConfig = {
 
       try {
         const sessionSnap = await get(ref(db, `sessions/${sessionId}/meta`));
+
         if (!sessionSnap.exists()) {
-          showMessage("studentMessage", "존재하지 않는 회차 코드입니다. 선생님께 확인하세요.", "error");
+          showMessage("studentMessage", "현재 회차 정보를 찾을 수 없습니다. 선생님께 확인하세요.", "error");
           $("submitBtn").disabled = false;
           return;
         }
 
-        const responseRef = push(ref(db, `sessions/${sessionId}/responses`));
-        await set(responseRef, {
-          nickname,
-          score,
-          opinion,
-          createdAt: Date.now()
+        const responseRef = ref(db, `sessions/${sessionId}/responses/${safeNickname}`);
+
+        const result = await runTransaction(responseRef, (currentData) => {
+          if (currentData !== null) {
+            return;
+          }
+
+          return {
+            nickname,
+            score,
+            opinion,
+            createdAt: Date.now()
+          };
         });
 
+        if (!result.committed) {
+          showMessage("studentMessage", "이미 제출한 닉네임입니다. 중복 제출은 할 수 없습니다.", "error");
+          $("submitBtn").disabled = false;
+          return;
+        }
+
+        localStorage.setItem(localKey, "true");
         localStorage.setItem("lastNickname", nickname);
-        localStorage.setItem("lastSessionId", sessionId);
+
         $("opinion").value = "";
         updateScore(50);
-        showMessage("studentMessage", "제출되었습니다. 소중한 의견 감사합니다.");
+
+        showMessage("studentMessage", "제출되었습니다. 소중한 의견 감사합니다.", "success");
       } catch (error) {
         console.error(error);
         showMessage("studentMessage", "제출 중 오류가 발생했습니다. Firebase 설정과 Database 규칙을 확인하세요.", "error");
@@ -427,17 +561,24 @@ const firebaseConfig = {
 
     window.loginTeacher = function() {
       const password = $("adminPassword").value;
+
       if (password === ADMIN_PASSWORD) {
         $("loginBox").classList.add("hidden");
         $("adminBox").classList.remove("hidden");
-        showMessage("teacherMessage", "관리자 화면에 입장했습니다.");
+        $("studentLink").value = fixedStudentUrl();
+        showMessage("teacherMessage", "관리자 화면에 입장했습니다.", "success");
+
+        if (activeSessionId && !$("sessionIdInput").value) {
+          $("sessionIdInput").value = activeSessionId;
+          loadSession();
+        }
       } else {
         showMessage("teacherMessage", "비밀번호가 맞지 않습니다.", "error");
       }
     };
 
     window.createSession = async function() {
-      const title = cleanText($("sessionTitle").value, 60) || "교육과정 평가회";
+      const title = cleanText($("sessionTitle").value, 60) || "Feel Score";
       const sessionId = makeSessionId();
 
       try {
@@ -446,12 +587,15 @@ const firebaseConfig = {
           createdAt: Date.now(),
           isOpen: true
         });
+
         await set(ref(db, "appState/activeSession"), sessionId);
+
         $("sessionIdInput").value = sessionId;
-        $("studentSession").value = sessionId;
-        localStorage.setItem("lastSessionId", sessionId);
+        $("studentLink").value = fixedStudentUrl();
+
         loadSession();
-        showMessage("teacherMessage", `새 회차가 생성되었습니다. 회차 코드: ${sessionId}`);
+
+        showMessage("teacherMessage", `새 회차가 생성되고 활성화되었습니다. 회차 코드: ${sessionId}`, "success");
       } catch (error) {
         console.error(error);
         showMessage("teacherMessage", "회차 생성 중 오류가 발생했습니다.", "error");
@@ -460,14 +604,13 @@ const firebaseConfig = {
 
     window.loadSession = function() {
       const sessionId = cleanText($("sessionIdInput").value, 40);
+
       if (!sessionId) {
         showMessage("teacherMessage", "조회할 회차 코드를 입력하세요.", "error");
         return;
       }
 
-      localStorage.setItem("lastSessionId", sessionId);
-      $("studentSession").value = sessionId;
-      updateStudentLink(sessionId);
+      $("studentLink").value = fixedStudentUrl();
 
       if (unsubscribeResults) {
         unsubscribeResults();
@@ -475,8 +618,10 @@ const firebaseConfig = {
       }
 
       const responsesRef = ref(db, `sessions/${sessionId}/responses`);
+
       unsubscribeResults = onValue(responsesRef, (snapshot) => {
         const data = snapshot.val() || {};
+
         currentRows = Object.entries(data).map(([id, item]) => ({
           id,
           nickname: item.nickname || "",
@@ -492,6 +637,31 @@ const firebaseConfig = {
       });
     };
 
+    window.setActiveSessionFromInput = async function() {
+      const sessionId = cleanText($("sessionIdInput").value, 40);
+
+      if (!sessionId) {
+        showMessage("teacherMessage", "활성화할 회차 코드를 입력하세요.", "error");
+        return;
+      }
+
+      try {
+        const sessionSnap = await get(ref(db, `sessions/${sessionId}/meta`));
+
+        if (!sessionSnap.exists()) {
+          showMessage("teacherMessage", "존재하지 않는 회차입니다. 먼저 새 회차를 만들거나 정확한 회차 코드를 입력하세요.", "error");
+          return;
+        }
+
+        await set(ref(db, "appState/activeSession"), sessionId);
+        $("studentLink").value = fixedStudentUrl();
+        showMessage("teacherMessage", `학생 입력 회차가 ${sessionId}로 설정되었습니다.`, "success");
+      } catch (error) {
+        console.error(error);
+        showMessage("teacherMessage", "활성 회차 설정 중 오류가 발생했습니다.", "error");
+      }
+    };
+
     function renderResults() {
       if (currentRows.length === 0) {
         $("resultBody").innerHTML = `<tr><td colspan="4">아직 응답이 없습니다.</td></tr>`;
@@ -502,7 +672,10 @@ const firebaseConfig = {
         return;
       }
 
-      const scores = currentRows.map(row => row.score).filter(score => !Number.isNaN(score));
+      const scores = currentRows
+        .map(row => row.score)
+        .filter(score => !Number.isNaN(score));
+
       const count = scores.length;
       const avg = count ? (scores.reduce((a, b) => a + b, 0) / count).toFixed(1) : "-";
       const max = count ? Math.max(...scores) : "-";
@@ -523,31 +696,16 @@ const firebaseConfig = {
       `).join("");
     }
 
-    function escapeHTML(text) {
-      return String(text)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    function updateStudentLink(sessionId) {
-      const url = new URL(location.href);
-      url.searchParams.set("session", sessionId);
-      $("studentLink").value = url.toString();
-    }
-
     window.copyStudentLink = async function() {
-      const link = $("studentLink").value;
-      if (!link) return;
+      const link = $("studentLink").value || fixedStudentUrl();
+
       try {
         await navigator.clipboard.writeText(link);
-        showMessage("teacherMessage", "학생 접속용 링크를 복사했습니다.");
+        showMessage("teacherMessage", "학생 접속용 고정 링크를 복사했습니다.", "success");
       } catch {
         $("studentLink").select();
         document.execCommand("copy");
-        showMessage("teacherMessage", "학생 접속용 링크를 복사했습니다.");
+        showMessage("teacherMessage", "학생 접속용 고정 링크를 복사했습니다.", "success");
       }
     };
 
@@ -572,68 +730,73 @@ const firebaseConfig = {
       const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
       const a = document.createElement("a");
       const sessionId = cleanText($("sessionIdInput").value, 40) || "session";
+
       a.href = URL.createObjectURL(blob);
       a.download = `feel-score-${sessionId}.csv`;
       a.click();
+
       URL.revokeObjectURL(a.href);
     };
 
     window.clearResponses = async function() {
       const sessionId = cleanText($("sessionIdInput").value, 40);
+
       if (!sessionId) {
         showMessage("teacherMessage", "삭제할 회차 코드를 입력하세요.", "error");
         return;
       }
 
       const ok = confirm(`현재 회차(${sessionId})의 응답을 모두 삭제할까요?`);
+
       if (!ok) return;
 
       try {
         await remove(ref(db, `sessions/${sessionId}/responses`));
-        showMessage("teacherMessage", "현재 회차 응답을 삭제했습니다.");
+        showMessage("teacherMessage", "현재 회차 응답을 삭제했습니다.", "success");
       } catch (error) {
         console.error(error);
         showMessage("teacherMessage", "삭제 중 오류가 발생했습니다.", "error");
       }
     };
 
-    async function loadActiveSession() {
-      const urlSession = new URLSearchParams(location.search).get("session");
-      const savedSession = localStorage.getItem("lastSessionId");
+    function watchActiveSession() {
+      $("studentLink").value = fixedStudentUrl();
+
+      onValue(ref(db, "appState/activeSession"), (snapshot) => {
+        activeSessionId = snapshot.val() || "";
+
+        if (activeSessionId) {
+          $("studentStatus").className = "notice info";
+          $("studentStatus").textContent = "현재 입력이 가능합니다. 아래 내용을 작성한 뒤 제출하세요.";
+          $("activeSessionInfo").className = "notice info";
+          $("activeSessionInfo").textContent = `현재 학생 입력 회차: ${activeSessionId}`;
+
+          if (!$("sessionIdInput").value) {
+            $("sessionIdInput").value = activeSessionId;
+          }
+        } else {
+          $("studentStatus").className = "notice error";
+          $("studentStatus").textContent = "아직 입력 가능한 회차가 열려 있지 않습니다. 선생님께 확인하세요.";
+          $("activeSessionInfo").className = "notice error";
+          $("activeSessionInfo").textContent = "현재 활성화된 학생 입력 회차가 없습니다.";
+        }
+      }, (error) => {
+        console.error(error);
+        $("studentStatus").className = "notice error";
+        $("studentStatus").textContent = "현재 회차를 불러오지 못했습니다. Firebase 설정과 규칙을 확인하세요.";
+      });
+    }
+
+    function loadSavedNickname() {
       const savedNickname = localStorage.getItem("lastNickname");
 
-      if (savedNickname) $("nickname").value = savedNickname;
-
-      if (urlSession) {
-        $("studentSession").value = urlSession;
-        $("sessionIdInput").value = urlSession;
-        updateStudentLink(urlSession);
-        return;
-      }
-
-      if (savedSession) {
-        $("studentSession").value = savedSession;
-        $("sessionIdInput").value = savedSession;
-        updateStudentLink(savedSession);
-      }
-
-      try {
-        onValue(ref(db, "appState/activeSession"), (snapshot) => {
-          const active = snapshot.val();
-          if (active && !$("studentSession").value) {
-            $("studentSession").value = active;
-          }
-          if (active && !$("sessionIdInput").value) {
-            $("sessionIdInput").value = active;
-            updateStudentLink(active);
-          }
-        });
-      } catch (error) {
-        console.error(error);
+      if (savedNickname) {
+        $("nickname").value = savedNickname;
       }
     }
 
-    loadActiveSession();
+    loadSavedNickname();
+    watchActiveSession();
   </script>
 </body>
 </html>

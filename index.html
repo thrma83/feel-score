@@ -34,7 +34,7 @@
     }
 
     main {
-      max-width: 960px;
+      max-width: 1080px;
       margin: 24px auto;
       padding: 0 16px 40px;
     }
@@ -76,6 +76,11 @@
       font-size: 23px;
     }
 
+    h3 {
+      margin: 24px 0 10px;
+      font-size: 18px;
+    }
+
     label {
       display: block;
       font-weight: 800;
@@ -92,7 +97,7 @@
     }
 
     textarea {
-      min-height: 120px;
+      min-height: 110px;
       resize: vertical;
       line-height: 1.5;
     }
@@ -116,6 +121,24 @@
     button:disabled {
       opacity: 0.55;
       cursor: not-allowed;
+    }
+
+    .small-btn {
+      display: inline-block;
+      width: auto;
+      margin: 2px;
+      padding: 7px 9px;
+      border: 0;
+      border-radius: 8px;
+      background: #273c75;
+      color: white;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .small-btn.gray {
+      background: #718093;
     }
 
     .row {
@@ -195,9 +218,34 @@
     }
 
     .opinion-cell {
-      max-width: 420px;
       white-space: pre-wrap;
       word-break: keep-all;
+      line-height: 1.5;
+    }
+
+    .result-table {
+      table-layout: fixed;
+    }
+
+    .result-table th:nth-child(1),
+    .result-table td:nth-child(1) {
+      width: 150px;
+    }
+
+    .result-table th:nth-child(2),
+    .result-table td:nth-child(2) {
+      width: 120px;
+    }
+
+    .result-table th:nth-child(3),
+    .result-table td:nth-child(3) {
+      width: 80px;
+      text-align: center;
+    }
+
+    .result-table th:nth-child(4),
+    .result-table td:nth-child(4) {
+      width: auto;
     }
 
     .pill {
@@ -219,7 +267,7 @@
     }
 
     .copy-line button {
-      width: 110px;
+      width: 130px;
       border: 0;
       border-radius: 10px;
       background: #718093;
@@ -249,8 +297,28 @@
         font-size: 13px;
       }
 
-      th:nth-child(1), td:nth-child(1) {
+      .copy-line {
+        flex-direction: column;
+      }
+
+      .copy-line button {
+        width: 100%;
+        padding: 12px;
+      }
+
+      .result-table th:nth-child(1),
+      .result-table td:nth-child(1) {
         display: none;
+      }
+
+      .result-table th:nth-child(2),
+      .result-table td:nth-child(2) {
+        width: 82px;
+      }
+
+      .result-table th:nth-child(3),
+      .result-table td:nth-child(3) {
+        width: 52px;
       }
     }
   </style>
@@ -276,7 +344,7 @@
       </div>
 
       <label for="nickname">닉네임</label>
-      <input id="nickname" maxlength="20" placeholder="예: 6학년 김OO, 별명 등" />
+      <input id="nickname" maxlength="20" placeholder="예: 6학년 김OO, 별명 등" autocomplete="off" />
 
       <label for="scoreRange">점수 <span class="pill"><span id="scoreText">50</span>점</span></label>
       <div class="score-box">
@@ -306,9 +374,11 @@
       </div>
 
       <div id="adminBox" class="hidden">
+        <h3>회차 만들기 / 수정</h3>
+
         <div class="row">
           <div>
-            <label for="sessionTitle">새 회차 제목</label>
+            <label for="sessionTitle">회차 제목</label>
             <input id="sessionTitle" placeholder="예: 1학기 교육과정 평가회" />
           </div>
           <div>
@@ -317,8 +387,15 @@
           </div>
         </div>
 
+        <label for="opinionPlaceholder">학생 의견 입력 안내 문구</label>
+        <textarea id="opinionPlaceholder" maxlength="300">오늘의 기분, 좋았던 점, 아쉬웠던 점, 바라는 점을 자유롭게 적으세요.</textarea>
+        <div class="notice muted">
+          이 문구는 학생용 의견 입력칸의 예시 문구로 보입니다. 비워 두면 기본 문구가 사용됩니다.
+        </div>
+
         <button class="secondary" onclick="createSession()">새 회차 만들고 활성화</button>
         <button class="primary" onclick="loadSession()">이 회차 결과 보기</button>
+        <button class="gray" onclick="updateSessionMeta()">현재 회차 제목/문구 수정</button>
         <button class="gray" onclick="setActiveSessionFromInput()">이 회차를 학생 입력 회차로 설정</button>
 
         <label>학생 접속용 고정 링크</label>
@@ -330,6 +407,28 @@
         <div id="activeSessionInfo" class="notice info">
           현재 활성화된 회차를 확인하고 있습니다.
         </div>
+
+        <h3>기존 회차 찾기</h3>
+        <div class="copy-line">
+          <input id="sessionSearch" placeholder="회차 제목 또는 회차 코드로 검색" oninput="renderSessionList()" />
+          <button onclick="loadSessionList()">목록 불러오기</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>생성일</th>
+              <th>회차 제목</th>
+              <th>회차 코드</th>
+              <th>기능</th>
+            </tr>
+          </thead>
+          <tbody id="sessionListBody">
+            <tr><td colspan="4">관리자 입장 후 목록을 불러오세요.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>현재 조회 결과</h3>
 
         <div class="stats">
           <div class="stat">응답 수<strong id="countStat">0</strong></div>
@@ -345,7 +444,7 @@
 
         <div id="teacherMessage"></div>
 
-        <table>
+        <table class="result-table">
           <thead>
             <tr>
               <th>시간</th>
@@ -369,6 +468,7 @@
       ref,
       set,
       get,
+      update,
       remove,
       onValue,
       runTransaction
@@ -385,13 +485,16 @@
     };
 
     const ADMIN_PASSWORD = "6185";
+    const DEFAULT_OPINION_PLACEHOLDER = "오늘의 기분, 좋았던 점, 아쉬웠던 점, 바라는 점을 자유롭게 적으세요.";
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
     let activeSessionId = "";
     let currentRows = [];
+    let allSessions = [];
     let unsubscribeResults = null;
+    let unsubscribeActiveMeta = null;
 
     const $ = (id) => document.getElementById(id);
 
@@ -419,6 +522,10 @@
         .slice(0, 50);
     }
 
+    function getOpinionPlaceholderInput() {
+      return cleanText($("opinionPlaceholder").value, 300) || DEFAULT_OPINION_PLACEHOLDER;
+    }
+
     function makeSessionId() {
       const now = new Date();
       const yy = String(now.getFullYear()).slice(2);
@@ -435,6 +542,7 @@
       const date = new Date(value);
       if (Number.isNaN(date.getTime())) return "-";
       return date.toLocaleString("ko-KR", {
+        year: "2-digit",
         month: "2-digit",
         day: "2-digit",
         hour: "2-digit",
@@ -545,8 +653,8 @@
         }
 
         localStorage.setItem(localKey, "true");
-        localStorage.setItem("lastNickname", nickname);
 
+        $("nickname").value = "";
         $("opinion").value = "";
         updateScore(50);
 
@@ -572,6 +680,8 @@
           $("sessionIdInput").value = activeSessionId;
           loadSession();
         }
+
+        loadSessionList();
       } else {
         showMessage("teacherMessage", "비밀번호가 맞지 않습니다.", "error");
       }
@@ -579,12 +689,15 @@
 
     window.createSession = async function() {
       const title = cleanText($("sessionTitle").value, 60) || "Feel Score";
+      const opinionPlaceholder = getOpinionPlaceholderInput();
       const sessionId = makeSessionId();
 
       try {
         await set(ref(db, `sessions/${sessionId}/meta`), {
           title,
+          opinionPlaceholder,
           createdAt: Date.now(),
+          updatedAt: Date.now(),
           isOpen: true
         });
 
@@ -594,6 +707,7 @@
         $("studentLink").value = fixedStudentUrl();
 
         loadSession();
+        loadSessionList();
 
         showMessage("teacherMessage", `새 회차가 생성되고 활성화되었습니다. 회차 코드: ${sessionId}`, "success");
       } catch (error) {
@@ -602,7 +716,7 @@
       }
     };
 
-    window.loadSession = function() {
+    window.loadSession = async function() {
       const sessionId = cleanText($("sessionIdInput").value, 40);
 
       if (!sessionId) {
@@ -611,6 +725,18 @@
       }
 
       $("studentLink").value = fixedStudentUrl();
+
+      try {
+        const metaSnap = await get(ref(db, `sessions/${sessionId}/meta`));
+
+        if (metaSnap.exists()) {
+          const meta = metaSnap.val() || {};
+          $("sessionTitle").value = meta.title || "";
+          $("opinionPlaceholder").value = meta.opinionPlaceholder || DEFAULT_OPINION_PLACEHOLDER;
+        }
+      } catch (error) {
+        console.error(error);
+      }
 
       if (unsubscribeResults) {
         unsubscribeResults();
@@ -637,6 +763,39 @@
       });
     };
 
+    window.updateSessionMeta = async function() {
+      const sessionId = cleanText($("sessionIdInput").value, 40);
+
+      if (!sessionId) {
+        showMessage("teacherMessage", "수정할 회차 코드를 입력하세요.", "error");
+        return;
+      }
+
+      const title = cleanText($("sessionTitle").value, 60) || "Feel Score";
+      const opinionPlaceholder = getOpinionPlaceholderInput();
+
+      try {
+        const sessionSnap = await get(ref(db, `sessions/${sessionId}/meta`));
+
+        if (!sessionSnap.exists()) {
+          showMessage("teacherMessage", "존재하지 않는 회차입니다.", "error");
+          return;
+        }
+
+        await update(ref(db, `sessions/${sessionId}/meta`), {
+          title,
+          opinionPlaceholder,
+          updatedAt: Date.now()
+        });
+
+        loadSessionList();
+        showMessage("teacherMessage", "현재 회차의 제목과 학생 안내 문구를 수정했습니다.", "success");
+      } catch (error) {
+        console.error(error);
+        showMessage("teacherMessage", "회차 정보 수정 중 오류가 발생했습니다.", "error");
+      }
+    };
+
     window.setActiveSessionFromInput = async function() {
       const sessionId = cleanText($("sessionIdInput").value, 40);
 
@@ -660,6 +819,67 @@
         console.error(error);
         showMessage("teacherMessage", "활성 회차 설정 중 오류가 발생했습니다.", "error");
       }
+    };
+
+    window.loadSessionList = async function() {
+      try {
+        const sessionsSnap = await get(ref(db, "sessions"));
+        const data = sessionsSnap.val() || {};
+
+        allSessions = Object.entries(data).map(([sessionId, item]) => {
+          const meta = item.meta || {};
+          return {
+            sessionId,
+            title: meta.title || "(제목 없음)",
+            opinionPlaceholder: meta.opinionPlaceholder || DEFAULT_OPINION_PLACEHOLDER,
+            createdAt: meta.createdAt || 0,
+            updatedAt: meta.updatedAt || 0
+          };
+        }).sort((a, b) => b.createdAt - a.createdAt);
+
+        renderSessionList();
+      } catch (error) {
+        console.error(error);
+        $("sessionListBody").innerHTML = `<tr><td colspan="4">회차 목록을 불러오지 못했습니다.</td></tr>`;
+      }
+    };
+
+    window.renderSessionList = function() {
+      const keyword = cleanText($("sessionSearch").value, 60).toLowerCase();
+
+      const filtered = allSessions.filter(item => {
+        const title = item.title.toLowerCase();
+        const sessionId = item.sessionId.toLowerCase();
+        return !keyword || title.includes(keyword) || sessionId.includes(keyword);
+      });
+
+      if (filtered.length === 0) {
+        $("sessionListBody").innerHTML = `<tr><td colspan="4">검색된 회차가 없습니다.</td></tr>`;
+        return;
+      }
+
+      $("sessionListBody").innerHTML = filtered.map(item => `
+        <tr>
+          <td>${formatTime(item.createdAt)}</td>
+          <td>${escapeHTML(item.title)}</td>
+          <td>${escapeHTML(item.sessionId)}</td>
+          <td>
+            <button class="small-btn" onclick="selectSession('${escapeHTML(item.sessionId)}')">결과 보기</button>
+            <button class="small-btn gray" onclick="activateSession('${escapeHTML(item.sessionId)}')">활성화</button>
+          </td>
+        </tr>
+      `).join("");
+    };
+
+    window.selectSession = function(sessionId) {
+      $("sessionIdInput").value = sessionId;
+      loadSession();
+    };
+
+    window.activateSession = async function(sessionId) {
+      $("sessionIdInput").value = sessionId;
+      await loadSession();
+      await setActiveSessionFromInput();
     };
 
     function renderResults() {
@@ -765,6 +985,11 @@
       onValue(ref(db, "appState/activeSession"), (snapshot) => {
         activeSessionId = snapshot.val() || "";
 
+        if (unsubscribeActiveMeta) {
+          unsubscribeActiveMeta();
+          unsubscribeActiveMeta = null;
+        }
+
         if (activeSessionId) {
           $("studentStatus").className = "notice info";
           $("studentStatus").textContent = "현재 입력이 가능합니다. 아래 내용을 작성한 뒤 제출하세요.";
@@ -774,11 +999,17 @@
           if (!$("sessionIdInput").value) {
             $("sessionIdInput").value = activeSessionId;
           }
+
+          unsubscribeActiveMeta = onValue(ref(db, `sessions/${activeSessionId}/meta`), (metaSnapshot) => {
+            const meta = metaSnapshot.val() || {};
+            $("opinion").placeholder = meta.opinionPlaceholder || DEFAULT_OPINION_PLACEHOLDER;
+          });
         } else {
           $("studentStatus").className = "notice error";
           $("studentStatus").textContent = "아직 입력 가능한 회차가 열려 있지 않습니다. 선생님께 확인하세요.";
           $("activeSessionInfo").className = "notice error";
           $("activeSessionInfo").textContent = "현재 활성화된 학생 입력 회차가 없습니다.";
+          $("opinion").placeholder = DEFAULT_OPINION_PLACEHOLDER;
         }
       }, (error) => {
         console.error(error);
@@ -787,15 +1018,6 @@
       });
     }
 
-    function loadSavedNickname() {
-      const savedNickname = localStorage.getItem("lastNickname");
-
-      if (savedNickname) {
-        $("nickname").value = savedNickname;
-      }
-    }
-
-    loadSavedNickname();
     watchActiveSession();
   </script>
 </body>

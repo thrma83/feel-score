@@ -141,6 +141,68 @@
       background: #718093;
     }
 
+    .button-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .button-grid button {
+      margin-top: 0;
+    }
+
+    .session-action-cell {
+      white-space: nowrap;
+      width: 270px;
+    }
+
+    .small-btn.activate {
+      background: #44bd32;
+    }
+
+    .session-list-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin: 12px 0 8px;
+    }
+
+    .session-list-controls button {
+      margin-top: 0;
+      padding: 11px 10px;
+      border: 0;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .session-list-controls .select {
+      background: #dcdde1;
+      color: #222;
+    }
+
+    .session-list-controls .delete {
+      background: #c23616;
+      color: white;
+    }
+
+    .check-cell {
+      width: 48px;
+      text-align: center;
+    }
+
+    .check-cell input {
+      width: auto;
+      transform: scale(1.1);
+      cursor: pointer;
+    }
+
+    .small-btn.delete {
+      background: #c23616;
+    }
+
     .row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -297,6 +359,19 @@
         font-size: 13px;
       }
 
+      .button-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .session-list-controls {
+        grid-template-columns: 1fr;
+      }
+
+      .session-action-cell {
+        white-space: normal;
+        width: auto;
+      }
+
       .copy-line {
         flex-direction: column;
       }
@@ -393,15 +468,17 @@
           이 문구는 학생용 의견 입력칸의 예시 문구로 보입니다. 비워 두면 기본 문구가 사용됩니다.
         </div>
 
-        <button class="secondary" onclick="createSession()">새 회차 만들고 활성화</button>
-        <button class="primary" onclick="loadSession()">이 회차 결과 보기</button>
-        <button class="gray" onclick="updateSessionMeta()">현재 회차 제목/문구 수정</button>
-        <button class="gray" onclick="setActiveSessionFromInput()">이 회차를 학생 입력 회차로 설정</button>
+        <div class="button-grid">
+          <button class="secondary" onclick="createSession()" title="새 회차를 만들고 학생들이 입력할 현재 회차로 바로 지정합니다.">새 회차 만들고 활성화</button>
+          <button class="primary" onclick="loadSession()" title="교사용 회차 코드 칸에 있는 회차의 응답 결과만 아래 표에 불러옵니다. 학생 입력 회차는 바뀌지 않습니다.">이 회차 결과 보기</button>
+          <button class="gray" onclick="updateSessionMeta()" title="현재 교사용 회차 코드 칸에 있는 회차의 제목과 학생 의견 안내 문구를 수정합니다. 기존 응답은 유지됩니다.">현재 회차 제목/문구 수정</button>
+          <button class="gray" onclick="setActiveSessionFromInput()" title="교사용 회차 코드 칸에 있는 회차를 학생들이 입력할 회차로 지정합니다.">이 회차를 학생 입력 회차로 설정</button>
+        </div>
 
         <label>학생 접속용 고정 링크</label>
         <div class="copy-line">
           <input id="studentLink" readonly />
-          <button onclick="copyStudentLink()">복사</button>
+          <button onclick="copyStudentLink()" title="학생들에게 공유할 고정 링크를 클립보드에 복사합니다.">복사</button>
         </div>
 
         <div id="activeSessionInfo" class="notice info">
@@ -410,13 +487,20 @@
 
         <h3>기존 회차 찾기</h3>
         <div class="copy-line">
-          <input id="sessionSearch" placeholder="회차 제목 또는 회차 코드로 검색" oninput="renderSessionList()" />
-          <button onclick="loadSessionList()">목록 불러오기</button>
+          <input id="sessionSearch" placeholder="회차 제목 또는 회차 코드로 검색" oninput="renderSessionList()" title="회차 제목이나 회차 코드 일부를 입력해 기존 회차를 찾습니다." />
+          <button onclick="loadSessionList()" title="Firebase에 저장된 기존 회차 목록을 다시 불러옵니다.">목록 불러오기</button>
+        </div>
+
+        <div class="session-list-controls">
+          <button class="select" onclick="selectAllVisibleSessions()" title="현재 목록에 보이는 회차를 모두 선택합니다. 검색 결과가 있으면 검색된 회차만 선택됩니다.">전체 선택</button>
+          <button class="select" onclick="clearSessionSelection()" title="선택된 회차 체크를 모두 해제합니다.">선택 해제</button>
+          <button class="delete" onclick="deleteSelectedSessions()" title="체크한 회차를 삭제합니다. 현재 학생 입력 회차는 삭제할 수 없습니다.">선택한 회차 삭제</button>
         </div>
 
         <table>
           <thead>
             <tr>
+              <th class="check-cell">선택</th>
               <th>생성일</th>
               <th>회차 제목</th>
               <th>회차 코드</th>
@@ -424,7 +508,7 @@
             </tr>
           </thead>
           <tbody id="sessionListBody">
-            <tr><td colspan="4">관리자 입장 후 목록을 불러오세요.</td></tr>
+            <tr><td colspan="5">관리자 입장 후 목록을 불러오세요.</td></tr>
           </tbody>
         </table>
 
@@ -438,8 +522,8 @@
         </div>
 
         <div class="row">
-          <button class="secondary" onclick="downloadCSV()">CSV 다운로드</button>
-          <button class="danger" onclick="clearResponses()">현재 회차 응답 삭제</button>
+          <button class="secondary" onclick="downloadCSV()" title="현재 아래 표에 불러온 회차의 응답만 CSV 파일로 저장합니다.">CSV 다운로드</button>
+          <button class="danger" onclick="clearResponses()" title="현재 교사용 회차 코드 칸에 있는 회차의 학생 응답만 삭제합니다. 회차 제목과 문구는 남습니다.">현재 회차 응답 삭제</button>
         </div>
 
         <div id="teacherMessage"></div>
@@ -840,7 +924,7 @@
         renderSessionList();
       } catch (error) {
         console.error(error);
-        $("sessionListBody").innerHTML = `<tr><td colspan="4">회차 목록을 불러오지 못했습니다.</td></tr>`;
+        $("sessionListBody").innerHTML = `<tr><td colspan="5">회차 목록을 불러오지 못했습니다.</td></tr>`;
       }
     };
 
@@ -854,21 +938,29 @@
       });
 
       if (filtered.length === 0) {
-        $("sessionListBody").innerHTML = `<tr><td colspan="4">검색된 회차가 없습니다.</td></tr>`;
+        $("sessionListBody").innerHTML = `<tr><td colspan="5">검색된 회차가 없습니다.</td></tr>`;
         return;
       }
 
-      $("sessionListBody").innerHTML = filtered.map(item => `
-        <tr>
-          <td>${formatTime(item.createdAt)}</td>
-          <td>${escapeHTML(item.title)}</td>
-          <td>${escapeHTML(item.sessionId)}</td>
-          <td>
-            <button class="small-btn" onclick="selectSession('${escapeHTML(item.sessionId)}')">결과 보기</button>
-            <button class="small-btn gray" onclick="activateSession('${escapeHTML(item.sessionId)}')">활성화</button>
-          </td>
-        </tr>
-      `).join("");
+      $("sessionListBody").innerHTML = filtered.map(item => {
+        const isActive = item.sessionId === activeSessionId;
+        const activeMark = isActive ? " <span class=\"pill\">현재 입력 회차</span>" : "";
+        return `
+          <tr>
+            <td class="check-cell">
+              <input type="checkbox" class="session-checkbox" value="${escapeHTML(item.sessionId)}" ${isActive ? "disabled" : ""} title="${isActive ? "현재 학생 입력 회차는 선택 삭제할 수 없습니다." : "삭제할 회차로 선택합니다."}" />
+            </td>
+            <td>${formatTime(item.createdAt)}</td>
+            <td>${escapeHTML(item.title)}${activeMark}</td>
+            <td>${escapeHTML(item.sessionId)}</td>
+            <td class="session-action-cell">
+              <button class="small-btn" onclick="selectSession('${escapeHTML(item.sessionId)}')" title="이 회차의 응답 결과를 아래 표에 불러옵니다. 학생 입력 회차는 바뀌지 않습니다.">결과 보기</button>
+              <button class="small-btn activate" onclick="activateSession('${escapeHTML(item.sessionId)}')" title="이 회차를 학생들이 입력할 현재 회차로 지정합니다.">활성화</button>
+              <button class="small-btn delete" onclick="deleteSession('${escapeHTML(item.sessionId)}')" title="이 회차 전체를 삭제합니다. 현재 학생 입력 회차는 삭제할 수 없습니다.">삭제</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
     };
 
     window.selectSession = function(sessionId) {
@@ -881,6 +973,117 @@
       await loadSession();
       await setActiveSessionFromInput();
     };
+
+    function getCheckedSessionIds() {
+      return Array.from(document.querySelectorAll(".session-checkbox:checked"))
+        .map(box => box.value)
+        .filter(Boolean);
+    }
+
+    window.selectAllVisibleSessions = function() {
+      document.querySelectorAll(".session-checkbox:not(:disabled)").forEach(box => {
+        box.checked = true;
+      });
+    };
+
+    window.clearSessionSelection = function() {
+      document.querySelectorAll(".session-checkbox").forEach(box => {
+        box.checked = false;
+      });
+    };
+
+    window.deleteSession = async function(sessionId) {
+      const target = allSessions.find(item => item.sessionId === sessionId);
+      const title = target ? target.title : "(제목 없음)";
+
+      if (sessionId === activeSessionId) {
+        showMessage("teacherMessage", "현재 학생 입력 회차는 삭제할 수 없습니다. 다른 회차를 활성화한 뒤 삭제하세요.", "error");
+        return;
+      }
+
+      const ok = confirm(
+        `이 회차를 삭제할까요?\n\n회차 제목: ${title}\n회차 코드: ${sessionId}\n\n회차 제목, 안내 문구, 학생 응답이 모두 삭제됩니다.\n삭제 전 CSV 다운로드 여부를 확인하세요.`
+      );
+
+      if (!ok) return;
+
+      const typed = prompt("삭제하려면 아래 칸에 '삭제'라고 입력하세요.");
+
+      if (typed !== "삭제") {
+        showMessage("teacherMessage", "삭제가 취소되었습니다.", "error");
+        return;
+      }
+
+      try {
+        await remove(ref(db, `sessions/${sessionId}`));
+
+        if ($("sessionIdInput").value === sessionId) {
+          $("sessionIdInput").value = "";
+          $("sessionTitle").value = "";
+          $("opinionPlaceholder").value = DEFAULT_OPINION_PLACEHOLDER;
+          currentRows = [];
+          renderResults();
+        }
+
+        await loadSessionList();
+        showMessage("teacherMessage", "선택한 회차를 삭제했습니다.", "success");
+      } catch (error) {
+        console.error(error);
+        showMessage("teacherMessage", "회차 삭제 중 오류가 발생했습니다.", "error");
+      }
+    };
+
+    window.deleteSelectedSessions = async function() {
+      const sessionIds = getCheckedSessionIds();
+
+      if (sessionIds.length === 0) {
+        showMessage("teacherMessage", "삭제할 회차를 먼저 선택하세요.", "error");
+        return;
+      }
+
+      if (sessionIds.includes(activeSessionId)) {
+        showMessage("teacherMessage", "현재 학생 입력 회차가 선택되어 있습니다. 현재 입력 회차는 삭제할 수 없습니다.", "error");
+        return;
+      }
+
+      const names = sessionIds.map(id => {
+        const target = allSessions.find(item => item.sessionId === id);
+        return `- ${(target && target.title) || "(제목 없음)"} (${id})`;
+      }).join("\n");
+
+      const ok = confirm(
+        `선택한 ${sessionIds.length}개 회차를 삭제할까요?\n\n${names}\n\n회차 제목, 안내 문구, 학생 응답이 모두 삭제됩니다.\n삭제 전 CSV 다운로드 여부를 확인하세요.`
+      );
+
+      if (!ok) return;
+
+      const typed = prompt(`선택한 ${sessionIds.length}개 회차를 삭제하려면 아래 칸에 '삭제'라고 입력하세요.`);
+
+      if (typed !== "삭제") {
+        showMessage("teacherMessage", "삭제가 취소되었습니다.", "error");
+        return;
+      }
+
+      try {
+        await Promise.all(sessionIds.map(id => remove(ref(db, `sessions/${id}`))));
+
+        if (sessionIds.includes($("sessionIdInput").value)) {
+          $("sessionIdInput").value = "";
+          $("sessionTitle").value = "";
+          $("opinionPlaceholder").value = DEFAULT_OPINION_PLACEHOLDER;
+          currentRows = [];
+          renderResults();
+        }
+
+        clearSessionSelection();
+        await loadSessionList();
+        showMessage("teacherMessage", `${sessionIds.length}개 회차를 삭제했습니다.`, "success");
+      } catch (error) {
+        console.error(error);
+        showMessage("teacherMessage", "선택 회차 삭제 중 오류가 발생했습니다.", "error");
+      }
+    };
+
 
     function renderResults() {
       if (currentRows.length === 0) {
@@ -1000,6 +1203,8 @@
             $("sessionIdInput").value = activeSessionId;
           }
 
+          renderSessionList();
+
           unsubscribeActiveMeta = onValue(ref(db, `sessions/${activeSessionId}/meta`), (metaSnapshot) => {
             const meta = metaSnapshot.val() || {};
             $("opinion").placeholder = meta.opinionPlaceholder || DEFAULT_OPINION_PLACEHOLDER;
@@ -1010,6 +1215,7 @@
           $("activeSessionInfo").className = "notice error";
           $("activeSessionInfo").textContent = "현재 활성화된 학생 입력 회차가 없습니다.";
           $("opinion").placeholder = DEFAULT_OPINION_PLACEHOLDER;
+          renderSessionList();
         }
       }, (error) => {
         console.error(error);

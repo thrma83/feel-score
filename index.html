@@ -157,6 +157,37 @@
       width: 340px;
     }
 
+    .teacher-subtabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 18px 0 16px;
+    }
+
+    .teacher-subtabs button {
+      padding: 12px 10px;
+      border: 0;
+      border-radius: 12px;
+      background: #dcdde1;
+      color: #222;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .teacher-subtabs button.active {
+      background: #273c75;
+      color: white;
+    }
+
+    .teacher-section.hidden {
+      display: none;
+    }
+
+    .date-cell {
+      white-space: nowrap;
+    }
+
     .small-btn.activate {
       background: #44bd32;
     }
@@ -295,7 +326,8 @@
 
     .result-table th:nth-child(1),
     .result-table td:nth-child(1) {
-      width: 150px;
+      width: 190px;
+      white-space: nowrap;
     }
 
     .result-table th:nth-child(2),
@@ -364,6 +396,10 @@
       }
 
       .button-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .teacher-subtabs {
         grid-template-columns: 1fr;
       }
 
@@ -453,32 +489,6 @@
       </div>
 
       <div id="adminBox" class="hidden">
-        <h3>회차 만들기 / 수정</h3>
-
-        <div class="row">
-          <div>
-            <label for="sessionTitle">회차 제목</label>
-            <input id="sessionTitle" placeholder="예: 1학기 교육과정 평가회" />
-          </div>
-          <div>
-            <label for="sessionIdInput">교사용 회차 코드</label>
-            <input id="sessionIdInput" placeholder="회차를 만들거나 조회할 코드" />
-          </div>
-        </div>
-
-        <label for="opinionPlaceholder">학생 의견 입력 안내 문구</label>
-        <textarea id="opinionPlaceholder" maxlength="300">오늘의 기분, 좋았던 점, 아쉬웠던 점, 바라는 점을 자유롭게 적으세요.</textarea>
-        <div class="notice muted">
-          이 문구는 학생용 의견 입력칸의 예시 문구로 보입니다. 비워 두면 기본 문구가 사용됩니다.
-        </div>
-
-        <div class="button-grid">
-          <button class="secondary" onclick="createSession()" title="새 회차를 만들고 학생들이 입력할 현재 회차로 바로 지정합니다.">새 회차 만들고 활성화</button>
-          <button class="primary" onclick="loadSession()" title="교사용 회차 코드 칸에 있는 회차의 응답 결과만 아래 표에 불러옵니다. 학생 입력 회차는 바뀌지 않습니다.">이 회차 결과 보기</button>
-          <button class="gray" onclick="updateSessionMeta()" title="현재 교사용 회차 코드 칸에 있는 회차의 제목과 학생 의견 안내 문구를 수정합니다. 기존 응답은 유지됩니다.">현재 회차 제목/문구 수정</button>
-          <button class="gray" onclick="setActiveSessionFromInput()" title="교사용 회차 코드 칸에 있는 회차를 학생들이 입력할 회차로 지정합니다.">이 회차를 학생 입력 회차로 설정</button>
-        </div>
-
         <label>학생 접속용 고정 링크</label>
         <div class="copy-line">
           <input id="studentLink" readonly />
@@ -489,57 +499,95 @@
           현재 활성화된 회차를 확인하고 있습니다.
         </div>
 
-        <h3>기존 회차 찾기</h3>
-        <div class="copy-line">
-          <input id="sessionSearch" placeholder="회차 제목 또는 회차 코드로 검색" oninput="renderSessionList()" title="회차 제목이나 회차 코드 일부를 입력해 기존 회차를 찾습니다." />
-          <button onclick="loadSessionList()" title="Firebase에 저장된 기존 회차 목록을 다시 불러옵니다.">목록 불러오기</button>
-        </div>
-
-        <div class="session-list-controls">
-          <button class="select" onclick="selectAllVisibleSessions()" title="현재 목록에 보이는 회차를 모두 선택합니다. 검색 결과가 있으면 검색된 회차만 선택됩니다.">전체 선택</button>
-          <button class="select" onclick="clearSessionSelection()" title="선택된 회차 체크를 모두 해제합니다.">선택 해제</button>
-          <button class="delete" onclick="deleteSelectedSessions()" title="체크한 회차를 삭제합니다. 현재 학생 입력 회차는 삭제할 수 없습니다.">선택한 회차 삭제</button>
-        </div>
-
-        <table>
-          <thead>
-            <tr>
-              <th class="check-cell">선택</th>
-              <th>생성일</th>
-              <th>회차 제목</th>
-              <th>회차 코드</th>
-              <th>기능</th>
-            </tr>
-          </thead>
-          <tbody id="sessionListBody">
-            <tr><td colspan="5">관리자 입장 후 목록을 불러오세요.</td></tr>
-          </tbody>
-        </table>
-
-        <h3>현재 조회 결과</h3>
-
-        <div class="stats">
-          <div class="stat">응답 수<strong id="countStat">0</strong></div>
-          <div class="stat">평균<strong id="avgStat">-</strong></div>
-          <div class="stat">최고<strong id="maxStat">-</strong></div>
-          <div class="stat">최저<strong id="minStat">-</strong></div>
-        </div>
-
         <div id="teacherMessage"></div>
 
-        <table class="result-table">
-          <thead>
-            <tr>
-              <th>시간</th>
-              <th>닉네임</th>
-              <th>점수</th>
-              <th>의견</th>
-            </tr>
-          </thead>
-          <tbody id="resultBody">
-            <tr><td colspan="4">아직 불러온 결과가 없습니다.</td></tr>
-          </tbody>
-        </table>
+        <div class="teacher-subtabs">
+          <button id="makeTab" class="active" onclick="showTeacherSection('make')" title="새 회차를 만들거나 현재 회차 제목과 안내 문구를 수정합니다.">회차 만들기/수정</button>
+          <button id="findTab" onclick="showTeacherSection('find')" title="저장된 기존 회차를 검색하고 CSV 저장, 활성화, 삭제를 합니다.">기존 회차 찾기</button>
+          <button id="resultsTab" onclick="showTeacherSection('results')" title="선택한 회차의 응답 통계와 의견을 확인합니다.">현재 조회 결과</button>
+        </div>
+
+        <div id="makeSection" class="teacher-section">
+          <h3>회차 만들기 / 수정</h3>
+
+          <div class="row">
+            <div>
+              <label for="sessionTitle">회차 제목</label>
+              <input id="sessionTitle" placeholder="예: 1학기 교육과정 평가회" />
+            </div>
+            <div>
+              <label for="sessionIdInput">교사용 회차 코드</label>
+              <input id="sessionIdInput" placeholder="회차를 만들거나 조회할 코드" />
+            </div>
+          </div>
+
+          <label for="opinionPlaceholder">학생 의견 입력 안내 문구</label>
+          <textarea id="opinionPlaceholder" maxlength="300">오늘의 기분, 좋았던 점, 아쉬웠던 점, 바라는 점을 자유롭게 적으세요.</textarea>
+          <div class="notice muted">
+            이 문구는 학생용 의견 입력칸의 예시 문구로 보입니다. 비워 두면 기본 문구가 사용됩니다.
+          </div>
+
+          <div class="button-grid">
+            <button class="secondary" onclick="createSession()" title="새 회차를 만들고 학생들이 입력할 현재 회차로 바로 지정합니다.">새 회차 만들고 활성화</button>
+            <button class="primary" onclick="loadSession()" title="교사용 회차 코드 칸에 있는 회차의 응답 결과만 아래 표에 불러옵니다. 학생 입력 회차는 바뀌지 않습니다.">이 회차 결과 보기</button>
+            <button class="gray" onclick="updateSessionMeta()" title="현재 교사용 회차 코드 칸에 있는 회차의 제목과 학생 의견 안내 문구를 수정합니다. 기존 응답은 유지됩니다.">현재 회차 제목/문구 수정</button>
+            <button class="gray" onclick="setActiveSessionFromInput()" title="교사용 회차 코드 칸에 있는 회차를 학생들이 입력할 회차로 지정합니다.">이 회차를 학생 입력 회차로 설정</button>
+          </div>
+        </div>
+
+        <div id="findSection" class="teacher-section hidden">
+          <h3>기존 회차 찾기</h3>
+          <div class="copy-line">
+            <input id="sessionSearch" placeholder="회차 제목 또는 회차 코드로 검색" oninput="renderSessionList()" title="회차 제목이나 회차 코드 일부를 입력해 기존 회차를 찾습니다." />
+            <button onclick="loadSessionList()" title="Firebase에 저장된 기존 회차 목록을 다시 불러옵니다.">목록 불러오기</button>
+          </div>
+
+          <div class="session-list-controls">
+            <button class="select" onclick="selectAllVisibleSessions()" title="현재 목록에 보이는 회차를 모두 선택합니다. 검색 결과가 있으면 검색된 회차만 선택됩니다.">전체 선택</button>
+            <button class="select" onclick="clearSessionSelection()" title="선택된 회차 체크를 모두 해제합니다.">선택 해제</button>
+            <button class="delete" onclick="deleteSelectedSessions()" title="체크한 회차를 삭제합니다. 현재 학생 입력 회차는 삭제할 수 없습니다.">선택한 회차 삭제</button>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th class="check-cell">선택</th>
+                <th class="date-cell">생성일</th>
+                <th>회차 제목</th>
+                <th>회차 코드</th>
+                <th>기능</th>
+              </tr>
+            </thead>
+            <tbody id="sessionListBody">
+              <tr><td colspan="5">관리자 입장 후 목록을 불러오세요.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="resultsSection" class="teacher-section hidden">
+          <h3>현재 조회 결과</h3>
+
+          <div class="stats">
+            <div class="stat">응답 수<strong id="countStat">0</strong></div>
+            <div class="stat">평균<strong id="avgStat">-</strong></div>
+            <div class="stat">최고<strong id="maxStat">-</strong></div>
+            <div class="stat">최저<strong id="minStat">-</strong></div>
+          </div>
+
+          <table class="result-table">
+            <thead>
+              <tr>
+                <th>시간</th>
+                <th>닉네임</th>
+                <th>점수</th>
+                <th>의견</th>
+              </tr>
+            </thead>
+            <tbody id="resultBody">
+              <tr><td colspan="4">아직 불러온 결과가 없습니다.</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   </main>
@@ -586,6 +634,15 @@
       $("teacherPage").classList.toggle("hidden", page !== "teacher");
       $("studentTab").classList.toggle("active", page === "student");
       $("teacherTab").classList.toggle("active", page === "teacher");
+    };
+
+    window.showTeacherSection = function(section) {
+      const sections = ["make", "find", "results"];
+
+      sections.forEach(name => {
+        $(`${name}Section`).classList.toggle("hidden", name !== section);
+        $(`${name}Tab`).classList.toggle("active", name === section);
+      });
     };
 
     function fixedStudentUrl() {
@@ -840,6 +897,7 @@
         })).sort((a, b) => b.createdAt - a.createdAt);
 
         renderResults();
+        showTeacherSection("results");
       }, (error) => {
         console.error(error);
         showMessage("teacherMessage", "결과를 불러오지 못했습니다. Firebase 규칙을 확인하세요.", "error");
@@ -949,7 +1007,7 @@
             <td class="check-cell">
               <input type="checkbox" class="session-checkbox" value="${escapeHTML(item.sessionId)}" ${isActive ? "disabled" : ""} title="${isActive ? "현재 학생 입력 회차는 선택 삭제할 수 없습니다." : "삭제할 회차로 선택합니다."}" />
             </td>
-            <td>${formatTime(item.createdAt)}</td>
+            <td class="date-cell">${formatTime(item.createdAt)}</td>
             <td>${escapeHTML(item.title)}${activeMark}</td>
             <td>${escapeHTML(item.sessionId)}</td>
             <td class="session-action-cell">

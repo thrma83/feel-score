@@ -478,8 +478,15 @@
       justify-content: space-between;
       gap: 24px;
       border-bottom: 1px solid rgba(255,255,255,0.13);
-      padding: 10px 0 14px;
+      padding: 10px 34px 14px;
       min-height: 88px;
+      width: 100%;
+      text-align: left;
+    }
+
+    .tv-title {
+      min-width: 0;
+      text-align: left;
     }
 
     .tv-title h1 {
@@ -716,6 +723,7 @@
     .tv-padlet-board {
       min-height: 0;
       overflow-y: auto;
+      overflow-x: hidden;
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 12px;
@@ -736,6 +744,8 @@
 
     .tv-note {
       width: 100%;
+      min-width: 0;
+      overflow: hidden;
       border-radius: 20px;
       padding: 14px 15px;
       color: #1f2937;
@@ -745,7 +755,12 @@
       grid-template-rows: auto 1fr auto;
       gap: 10px;
       transform: rotate(-0.4deg);
-      transition: opacity 0.2s ease, transform 0.2s ease;
+      transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+    }
+
+    .tv-note:hover {
+      box-shadow: 0 20px 42px rgba(0,0,0,0.30);
     }
 
     .tv-note:nth-child(2n) { transform: rotate(0.35deg); }
@@ -762,9 +777,11 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
+      min-width: 0;
     }
 
     .tv-note-name {
+      min-width: 0;
       font-weight: 1000;
       color: #273c75;
       white-space: nowrap;
@@ -783,10 +800,13 @@
     }
 
     .tv-note-text {
+      min-width: 0;
       margin: 0;
       line-height: 1.52;
       font-size: 14px;
-      word-break: keep-all;
+      word-break: break-all;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
     }
 
     .tv-note-foot {
@@ -830,6 +850,100 @@
       font-size: 20px;
       font-weight: 900;
       text-align: center;
+    }
+
+
+    .tv-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 42px;
+      background: rgba(2, 6, 23, 0.74);
+      backdrop-filter: blur(8px);
+    }
+
+    .tv-modal.hidden {
+      display: none !important;
+    }
+
+    .tv-modal-card {
+      position: relative;
+      width: min(920px, 86vw);
+      max-height: 82vh;
+      border-radius: 30px;
+      padding: 34px 38px;
+      color: #1f2937;
+      box-shadow: 0 30px 90px rgba(0,0,0,0.45);
+      overflow-y: auto;
+    }
+
+    .tv-modal-card.very-low { background: #ffe4e6; }
+    .tv-modal-card.low { background: #fecdd3; }
+    .tv-modal-card.mid { background: #fef3c7; }
+    .tv-modal-card.high { background: #dbeafe; }
+    .tv-modal-card.very-high { background: #dcfce7; }
+
+    .tv-modal-close {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.72);
+      color: #0f172a;
+      font-size: 26px;
+      font-weight: 1000;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .tv-modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin: 0 48px 22px 0;
+    }
+
+    .tv-modal-name {
+      min-width: 0;
+      font-size: 30px;
+      font-weight: 1000;
+      color: #1e3a8a;
+      overflow-wrap: anywhere;
+    }
+
+    .tv-modal-score {
+      flex: 0 0 auto;
+      background: rgba(255,255,255,0.72);
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 22px;
+      font-weight: 1000;
+      color: #0f172a;
+    }
+
+    .tv-modal-text {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.62;
+      font-weight: 800;
+      word-break: break-all;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    .tv-modal-time {
+      margin-top: 24px;
+      text-align: right;
+      font-size: 17px;
+      font-weight: 900;
+      color: #64748b;
     }
 
     @media (max-width: 1500px) {
@@ -1146,6 +1260,19 @@
   </section>
 
 
+  <div id="tvModal" class="tv-modal hidden">
+    <div id="tvModalCard" class="tv-modal-card">
+      <button id="tvModalClose" class="tv-modal-close" type="button" title="닫기">×</button>
+      <div class="tv-modal-head">
+        <div id="tvModalName" class="tv-modal-name">닉네임</div>
+        <div id="tvModalScore" class="tv-modal-score">0점</div>
+      </div>
+      <p id="tvModalText" class="tv-modal-text"></p>
+      <div id="tvModalTime" class="tv-modal-time"></div>
+    </div>
+  </div>
+
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
@@ -1328,6 +1455,40 @@
       });
     }
 
+    function openTVResponseModal(responseId) {
+      const row = tvRows.find(item => item.id === responseId);
+
+      if (!row) return;
+
+      const band = getScoreBand(row.score);
+      $("tvModalCard").className = `tv-modal-card ${band.noteClass}`;
+      $("tvModalName").textContent = row.nickname || "이름 없음";
+      $("tvModalScore").textContent = `${row.score}점`;
+      $("tvModalText").textContent = row.opinion || "(의견 없음)";
+      $("tvModalTime").textContent = formatShortTime(row.createdAt);
+      $("tvModal").classList.remove("hidden");
+    }
+
+    function closeTVResponseModal() {
+      $("tvModal").classList.add("hidden");
+    }
+
+    window.openTVResponseModal = openTVResponseModal;
+    window.closeTVResponseModal = closeTVResponseModal;
+
+    $("tvModalClose").addEventListener("click", closeTVResponseModal);
+    $("tvModal").addEventListener("click", (event) => {
+      if (event.target.id === "tvModal") {
+        closeTVResponseModal();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeTVResponseModal();
+      }
+    });
+
     function renderTVOpinionCards() {
       const filtered = tvRows.filter(row => {
         if (tvFilter === "all") return true;
@@ -1349,7 +1510,7 @@
         const band = getScoreBand(row.score);
 
         return `
-          <article class="tv-note ${band.noteClass}">
+          <article class="tv-note ${band.noteClass}" data-response-id="${escapeHTML(row.id)}" title="클릭하면 응답을 크게 볼 수 있습니다.">
             <div class="tv-note-head">
               <span class="tv-note-name">${escapeHTML(row.nickname)}</span>
               <span class="tv-note-score">${row.score}점</span>
@@ -1361,6 +1522,12 @@
           </article>
         `;
       }).join("");
+
+      document.querySelectorAll(".tv-note").forEach(card => {
+        card.addEventListener("click", () => {
+          openTVResponseModal(card.dataset.responseId);
+        });
+      });
     }
 
     function renderTVPage(meta, rows, sessionId) {

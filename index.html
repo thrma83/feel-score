@@ -311,6 +311,7 @@
 
 
     .qr-box {
+      cursor: pointer;
       width: 148px;
       height: 148px;
       display: flex;
@@ -1352,7 +1353,7 @@
         </div>
 
         <div class="qr-panel">
-          <div class="qr-box">
+          <div class="qr-box" onclick="openStudentQRModal()" title="QR코드를 크게 보려면 클릭하세요.">
             <canvas id="studentQrCanvas" width="132" height="132"></canvas>
             <img id="studentQrImage" class="hidden" alt="학생 접속 QR코드" />
           </div>

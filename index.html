@@ -921,6 +921,20 @@
     }
 
 
+    body.tv-fit-small {
+      overflow: hidden !important;
+    }
+
+    body.tv-fit-small #tvPage.tv-screen {
+      width: 1280px !important;
+      height: 720px !important;
+      min-width: 1280px !important;
+      min-height: 720px !important;
+      transform: scale(var(--tvScale, 1));
+      transform-origin: top left;
+    }
+
+
     body.tv-mode #tvPage {
       width: 100vw !important;
       max-width: none !important;
@@ -1005,7 +1019,7 @@
 
     .tv-layout {
       display: grid !important;
-      grid-template-columns: 350px minmax(0, 1fr);
+      grid-template-columns: 320px minmax(0, 1fr);
       gap: 12px;
       min-height: 0;
       width: 100% !important;
@@ -1020,7 +1034,7 @@
       background: rgba(255,255,255,0.075);
       border: 1px solid rgba(255,255,255,0.13);
       border-radius: 24px;
-      padding: 18px;
+      padding: 14px;
       box-shadow: 0 18px 48px rgba(0,0,0,0.25);
       backdrop-filter: blur(12px);
       min-height: 0;
@@ -1204,8 +1218,8 @@
       overflow-y: auto;
       overflow-x: hidden;
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 9px;
       align-items: stretch;
       align-content: start;
       padding: 4px 8px 4px 2px;
@@ -1225,14 +1239,14 @@
       width: 100%;
       min-width: 0;
       overflow: hidden;
-      border-radius: 20px;
-      padding: 14px 15px;
+      border-radius: 16px;
+      padding: 10px 11px;
       color: #1f2937;
-      box-shadow: 0 16px 30px rgba(0,0,0,0.22);
-      min-height: 118px;
+      box-shadow: 0 12px 22px rgba(0,0,0,0.20);
+      min-height: 94px;
       display: grid;
-      grid-template-rows: auto 1fr auto;
-      gap: 10px;
+      grid-template-rows: auto auto auto;
+      gap: 6px;
       transform: rotate(-0.4deg);
       transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
       cursor: pointer;
@@ -1272,8 +1286,8 @@
       background: rgba(255,255,255,0.70);
       color: #0f172a;
       border-radius: 999px;
-      padding: 5px 9px;
-      font-size: 13px;
+      padding: 4px 7px;
+      font-size: 12px;
       font-weight: 1000;
       white-space: nowrap;
     }
@@ -1281,11 +1295,15 @@
     .tv-note-text {
       min-width: 0;
       margin: 0;
-      line-height: 1.52;
-      font-size: 14px;
+      line-height: 1.34;
+      font-size: 12.5px;
       word-break: break-all;
       overflow-wrap: anywhere;
-      white-space: pre-wrap;
+      white-space: normal;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .tv-note-foot {
@@ -1294,7 +1312,7 @@
       justify-content: flex-end;
       gap: 8px;
       color: #64748b;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
     }
 
@@ -1445,7 +1463,13 @@
 
     @media (max-width: 1500px) {
       .tv-padlet-board {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 1180px) and (orientation: landscape) {
+      .tv-padlet-board {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
       }
     }
 
@@ -1678,6 +1702,89 @@
       .result-table th:nth-child(4),
       .result-table td:nth-child(4) {
         width: auto;
+      }
+
+
+      #resultsSection .result-table {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        table-layout: auto !important;
+        overflow: visible !important;
+        margin-top: 10px;
+      }
+
+      #resultsSection .result-table thead {
+        display: none !important;
+      }
+
+      #resultsSection .result-table tbody {
+        display: grid !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        gap: 10px;
+      }
+
+      #resultsSection .result-table tr {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 10px 12px;
+        background: #ffffff;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.04);
+      }
+
+      #resultsSection .result-table td {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+        border-bottom: 0;
+        padding: 4px 0;
+        white-space: normal !important;
+        overflow: hidden;
+        overflow-wrap: anywhere !important;
+        word-break: break-all !important;
+      }
+
+      #resultsSection .result-table td::before {
+        content: attr(data-label);
+        display: inline-block;
+        min-width: 52px;
+        margin-right: 8px;
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 900;
+        vertical-align: top;
+      }
+
+      #resultsSection .result-table td[colspan]::before {
+        content: "";
+        display: none;
+      }
+
+      #resultsSection .result-table .date-cell {
+        display: none !important;
+      }
+
+      #resultsSection .result-table .opinion-cell {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        white-space: pre-wrap !important;
+        overflow-wrap: anywhere !important;
+        word-break: break-all !important;
+        line-height: 1.55;
+        overflow: hidden;
+      }
+
+      #resultsSection .result-table .opinion-cell::before {
+        display: block;
+        margin: 0 0 4px;
       }
 
       body.tv-mode {
@@ -2550,10 +2657,30 @@
       renderTVOpinionCards();
     }
 
+
+    function updateTVViewportFit() {
+      if (!document.body.classList.contains("tv-mode")) return;
+
+      const isSmallLandscape = window.innerWidth > window.innerHeight && (window.innerWidth < 1180 || window.innerHeight < 700);
+
+      if (isSmallLandscape) {
+        const scale = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+        document.documentElement.style.setProperty("--tvScale", String(scale));
+        document.body.classList.add("tv-fit-small");
+      } else {
+        document.documentElement.style.setProperty("--tvScale", "1");
+        document.body.classList.remove("tv-fit-small");
+      }
+    }
+
+    window.addEventListener("resize", updateTVViewportFit);
+    window.addEventListener("orientationchange", () => setTimeout(updateTVViewportFit, 250));
+
     async function initTVPage() {
       if (!isTVMode()) return;
 
       document.body.classList.add("tv-mode");
+      updateTVViewportFit();
       document.querySelector("body > header")?.classList.add("hidden");
       document.querySelector("body > main")?.classList.add("hidden");
       $("tvPage").classList.remove("hidden");
@@ -2588,6 +2715,7 @@
         })).sort((a, b) => b.createdAt - a.createdAt);
 
         renderTVPage(meta, rows, sessionId);
+        updateTVViewportFit();
       } catch (error) {
         console.error(error);
         $("tvSubtitle").textContent = "결과를 불러오지 못했습니다.";
@@ -3303,10 +3431,10 @@
 
       $("resultBody").innerHTML = currentRows.map(row => `
         <tr>
-          <td class="date-cell">${formatTime(row.createdAt)}</td>
-          <td>${escapeHTML(row.nickname)}</td>
-          <td><strong>${row.score}</strong></td>
-          <td class="opinion-cell">${escapeHTML(row.opinion)}</td>
+          <td class="date-cell" data-label="시간">${formatTime(row.createdAt)}</td>
+          <td data-label="닉네임">${escapeHTML(row.nickname)}</td>
+          <td data-label="점수"><strong>${row.score}</strong></td>
+          <td class="opinion-cell" data-label="의견">${escapeHTML(row.opinion)}</td>
         </tr>
       `).join("");
     }

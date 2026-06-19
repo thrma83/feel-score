@@ -611,14 +611,45 @@
       color: #a11a0a;
     }
 
+
+    .session-title-cell {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      flex-wrap: wrap;
+      line-height: 1.35;
+    }
+
+    .session-title-text {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .session-title-cell .pill,
+    .session-title-cell .duplicate-pill {
+      margin-left: 0;
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 24px;
+      line-height: 1;
+      vertical-align: middle;
+    }
+
     .duplicate-pill {
-      display: inline-block;
-      margin-left: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 0;
       padding: 4px 8px;
       border-radius: 999px;
       font-size: 12px;
       font-weight: 900;
       vertical-align: middle;
+      line-height: 1;
+      min-height: 24px;
     }
 
     .duplicate-pill.allow {
@@ -1386,6 +1417,10 @@
         width: auto;
       }
 
+      .session-title-cell {
+        align-items: flex-start;
+      }
+
       .qr-panel {
         grid-template-columns: 1fr;
         justify-items: center;
@@ -1512,24 +1547,26 @@
           <button id="findTab" onclick="showTeacherSection('find')" title="저장된 기존 회차를 검색하고 CSV 저장, 활성화, 삭제를 합니다.">기존 회차 찾기</button>
         </div>
 
-        <label>학생 접속용 고정 링크</label>
-        <div class="copy-line">
-          <input id="studentLink" readonly />
-          <button onclick="copyStudentLink()" title="학생들에게 공유할 고정 링크를 클립보드에 복사합니다.">복사</button>
-        </div>
-
-        <div class="qr-panel">
-          <div class="qr-box" onclick="openStudentQRModal()" title="QR코드를 크게 보려면 클릭하세요.">
-            <canvas id="studentQrCanvas" width="132" height="132"></canvas>
-            <img id="studentQrImage" class="hidden" alt="학생 접속 QR코드" />
+        <div id="studentAccessPanel">
+          <label>학생 접속용 고정 링크</label>
+          <div class="copy-line">
+            <input id="studentLink" readonly />
+            <button onclick="copyStudentLink()" title="학생들에게 공유할 고정 링크를 클립보드에 복사합니다.">복사</button>
           </div>
-          <div class="qr-info">
-            <strong>학생 접속 QR코드</strong>
-            <p>학생들이 이 QR코드를 찍으면 학생용 입력 화면으로 접속합니다. 현재 활성 회차에 자동 제출됩니다.</p>
-            <div id="qrMessage" class="qr-message">QR코드를 준비하고 있습니다.</div>
-            <div class="qr-actions">
-              <button class="refresh" onclick="renderStudentQRCode()" title="학생 접속 링크로 QR코드를 다시 만듭니다.">QR 새로고침</button>
-              <button class="download" onclick="downloadStudentQRCode()" title="제목과 안내 문구가 포함된 큰 QR 이미지를 다운로드합니다.">QR 다운로드</button>
+
+          <div class="qr-panel">
+            <div class="qr-box" onclick="openStudentQRModal()" title="QR코드를 크게 보려면 클릭하세요.">
+              <canvas id="studentQrCanvas" width="132" height="132"></canvas>
+              <img id="studentQrImage" class="hidden" alt="학생 접속 QR코드" />
+            </div>
+            <div class="qr-info">
+              <strong>학생 접속 QR코드</strong>
+              <p>학생들이 이 QR코드를 찍으면 학생용 입력 화면으로 접속합니다. 현재 활성 회차에 자동 제출됩니다.</p>
+              <div id="qrMessage" class="qr-message">QR코드를 준비하고 있습니다.</div>
+              <div class="qr-actions">
+                <button class="refresh" onclick="renderStudentQRCode()" title="학생 접속 링크로 QR코드를 다시 만듭니다.">QR 새로고침</button>
+                <button class="download" onclick="downloadStudentQRCode()" title="제목과 안내 문구가 포함된 큰 QR 이미지를 다운로드합니다.">QR 다운로드</button>
+              </div>
             </div>
           </div>
         </div>
@@ -1784,6 +1821,17 @@
         $(`${name}Section`).classList.toggle("hidden", name !== section);
         $(`${name}Tab`).classList.toggle("active", name === section);
       });
+
+      const accessPanel = $("studentAccessPanel");
+      const activeInfo = $("activeSessionInfo");
+
+      if (accessPanel) {
+        accessPanel.classList.toggle("hidden", section !== "make");
+      }
+
+      if (activeInfo) {
+        activeInfo.classList.toggle("hidden", section === "find");
+      }
 
       if (section === "results") {
         const selectedSessionId = cleanText($("sessionIdInput").value, 40);
@@ -2823,17 +2871,23 @@
 
       $("sessionListBody").innerHTML = filtered.map(item => {
         const isActive = item.sessionId === activeSessionId;
-        const activeMark = isActive ? " <span class=\"pill\">현재 입력 회차</span>" : "";
+        const activeMark = isActive ? "<span class=\"pill\">현재 입력 회차</span>" : "";
         const duplicateMark = item.allowDeviceDuplicate
-          ? " <span class=\"duplicate-pill allow\">중복 허용</span>"
-          : " <span class=\"duplicate-pill block\">중복 차단</span>";
+          ? "<span class=\"duplicate-pill allow\">중복 허용</span>"
+          : "<span class=\"duplicate-pill block\">중복 차단</span>";
         return `
           <tr>
             <td class="check-cell">
               <input type="checkbox" class="session-checkbox" value="${escapeHTML(item.sessionId)}" ${isActive ? "disabled" : ""} title="${isActive ? "현재 학생 입력 회차는 선택 삭제할 수 없습니다." : "삭제할 회차로 선택합니다."}" />
             </td>
             <td class="date-cell">${formatTime(item.createdAt)}</td>
-            <td>${escapeHTML(item.title)}${activeMark}${duplicateMark}</td>
+            <td>
+              <div class="session-title-cell">
+                <span class="session-title-text">${escapeHTML(item.title)}</span>
+                ${activeMark}
+                ${duplicateMark}
+              </div>
+            </td>
             <td>${escapeHTML(item.sessionId)}</td>
             <td class="session-action-cell">
               <button class="small-btn" onclick="selectSession('${escapeHTML(item.sessionId)}')" title="이 회차의 응답 결과를 아래 표에 불러옵니다. 학생 입력 회차는 바뀌지 않습니다.">결과 보기</button>

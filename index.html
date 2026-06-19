@@ -154,30 +154,54 @@
 
     .session-action-cell {
       white-space: nowrap;
-      width: 340px;
+      width: 430px;
     }
 
     .teacher-subtabs {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin: 18px 0 16px;
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      margin: 2px 0 18px;
+      padding: 8px 8px 0;
+      background: #eef1f5;
+      border-bottom: 1px solid #c8ccd4;
+      border-radius: 14px 14px 0 0;
+      overflow-x: auto;
     }
 
     .teacher-subtabs button {
-      padding: 12px 10px;
-      border: 0;
-      border-radius: 12px;
-      background: #dcdde1;
-      color: #222;
-      font-size: 15px;
+      min-width: 145px;
+      padding: 11px 16px 10px;
+      border: 1px solid #c8ccd4;
+      border-bottom: 0;
+      border-radius: 12px 12px 0 0;
+      background: #e1e5eb;
+      color: #3a3f47;
+      font-size: 14px;
       font-weight: 800;
       cursor: pointer;
+      white-space: nowrap;
+      position: relative;
+      top: 1px;
     }
 
     .teacher-subtabs button.active {
-      background: #273c75;
-      color: white;
+      background: white;
+      color: #273c75;
+      border-color: #c8ccd4;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+    }
+
+    .teacher-subtabs button:hover {
+      background: #f7f8fa;
+    }
+
+    .teacher-section {
+      border: 1px solid #c8ccd4;
+      border-top: 0;
+      border-radius: 0 0 14px 14px;
+      padding: 16px;
+      background: white;
     }
 
     .teacher-section.hidden {
@@ -232,6 +256,10 @@
 
     .small-btn.csv {
       background: #0097e6;
+    }
+
+    .small-btn.tv {
+      background: #8e44ad;
     }
 
     .small-btn.delete {
@@ -374,6 +402,376 @@
       cursor: pointer;
     }
 
+
+    body.tv-mode {
+      background: #0f172a;
+      overflow: hidden;
+    }
+
+    #tvPage {
+      color: #f8fafc;
+    }
+
+    .tv-screen {
+      width: 100vw;
+      height: 100vh;
+      min-width: 1280px;
+      min-height: 720px;
+      padding: 28px 34px;
+      display: grid;
+      grid-template-rows: 82px 1fr;
+      gap: 20px;
+      background:
+        radial-gradient(circle at 12% 16%, rgba(59,130,246,0.22), transparent 28%),
+        radial-gradient(circle at 86% 12%, rgba(34,197,94,0.14), transparent 26%),
+        linear-gradient(135deg, #0f172a, #111827 58%, #172033);
+    }
+
+    .tv-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.13);
+      padding-bottom: 18px;
+    }
+
+    .tv-title h1 {
+      margin: 0;
+      font-size: 34px;
+      letter-spacing: -0.6px;
+      line-height: 1.1;
+    }
+
+    .tv-title p {
+      margin: 8px 0 0;
+      font-size: 17px;
+      color: #cbd5e1;
+    }
+
+    .tv-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(96,165,250,0.16);
+      border: 1px solid rgba(96,165,250,0.42);
+      color: #dbeafe;
+      font-size: 16px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .tv-status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: #60a5fa;
+      box-shadow: 0 0 14px #60a5fa;
+    }
+
+    .tv-layout {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 22px;
+      min-height: 0;
+    }
+
+    .tv-panel {
+      background: rgba(255,255,255,0.075);
+      border: 1px solid rgba(255,255,255,0.13);
+      border-radius: 28px;
+      padding: 22px;
+      box-shadow: 0 18px 48px rgba(0,0,0,0.25);
+      backdrop-filter: blur(12px);
+      min-height: 0;
+    }
+
+    .tv-stats-panel {
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 16px;
+    }
+
+    .tv-avg-card {
+      background: linear-gradient(135deg, #2563eb, #22c55e);
+      border-radius: 26px;
+      padding: 28px 20px;
+      text-align: center;
+      box-shadow: 0 16px 34px rgba(37,99,235,0.24);
+    }
+
+    .tv-avg-label {
+      font-size: 20px;
+      font-weight: 900;
+      opacity: 0.92;
+    }
+
+    .tv-avg-score {
+      margin-top: 8px;
+      font-size: 86px;
+      font-weight: 1000;
+      line-height: 1;
+      letter-spacing: -3px;
+    }
+
+    .tv-avg-score span {
+      font-size: 32px;
+      letter-spacing: -1px;
+    }
+
+    .tv-mini-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .tv-mini-stat {
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 18px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .tv-mini-stat span {
+      display: block;
+      color: #cbd5e1;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .tv-mini-stat strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 30px;
+      color: white;
+    }
+
+    .tv-section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 12px;
+      margin: 4px 0 12px;
+    }
+
+    .tv-section-title h2 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -0.2px;
+    }
+
+    .tv-section-title small {
+      color: #cbd5e1;
+      font-size: 13px;
+      text-align: right;
+    }
+
+    .tv-dist-list {
+      display: grid;
+      gap: 11px;
+    }
+
+    .tv-dist-row {
+      display: grid;
+      grid-template-columns: 64px 1fr 45px;
+      gap: 10px;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .tv-range {
+      font-weight: 900;
+      color: #e5e7eb;
+    }
+
+    .tv-track {
+      height: 22px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .tv-bar {
+      height: 100%;
+      border-radius: 999px;
+    }
+
+    .tv-very-low-bar { background: linear-gradient(90deg, #fb7185, #e11d48); }
+    .tv-low-bar { background: linear-gradient(90deg, #fda4af, #fb7185); }
+    .tv-mid-bar { background: linear-gradient(90deg, #facc15, #f97316); }
+    .tv-high-bar { background: linear-gradient(90deg, #60a5fa, #2563eb); }
+    .tv-very-high-bar { background: linear-gradient(90deg, #86efac, #22c55e); }
+
+    .tv-count {
+      color: white;
+      font-weight: 1000;
+      text-align: right;
+    }
+
+    .tv-board-panel {
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 14px;
+      overflow: hidden;
+    }
+
+    .tv-board-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .tv-board-head h2 {
+      margin: 0;
+      font-size: 26px;
+      letter-spacing: -0.3px;
+    }
+
+    .tv-filter-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .tv-chip {
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+      cursor: pointer;
+      color: #e5e7eb;
+      background: rgba(255,255,255,0.09);
+    }
+
+    .tv-chip.active {
+      background: white;
+      color: #0f172a;
+      border-color: white;
+    }
+
+    .tv-padlet-board {
+      min-height: 0;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      align-content: start;
+      padding: 4px 8px 4px 2px;
+    }
+
+    .tv-padlet-board::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .tv-padlet-board::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.26);
+      border-radius: 999px;
+    }
+
+    .tv-note {
+      border-radius: 20px;
+      padding: 16px 17px;
+      color: #1f2937;
+      box-shadow: 0 16px 30px rgba(0,0,0,0.22);
+      min-height: 132px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 10px;
+      transform: rotate(-0.4deg);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .tv-note:nth-child(2n) { transform: rotate(0.35deg); }
+    .tv-note:nth-child(3n) { transform: rotate(-0.15deg); }
+
+    .tv-note.very-low { background: #ffe4e6; }
+    .tv-note.low { background: #fecdd3; }
+    .tv-note.mid { background: #fef3c7; }
+    .tv-note.high { background: #dbeafe; }
+    .tv-note.very-high { background: #dcfce7; }
+
+    .tv-note-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .tv-note-name {
+      font-weight: 1000;
+      color: #273c75;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tv-note-score {
+      background: rgba(255,255,255,0.70);
+      color: #0f172a;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 13px;
+      font-weight: 1000;
+      white-space: nowrap;
+    }
+
+    .tv-note-text {
+      margin: 0;
+      line-height: 1.52;
+      font-size: 15px;
+      word-break: keep-all;
+    }
+
+    .tv-note-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .tv-tag {
+      color: #334155;
+      background: rgba(255,255,255,0.55);
+      border-radius: 999px;
+      padding: 4px 8px;
+      white-space: nowrap;
+    }
+
+    .tv-empty-message {
+      display: none;
+      padding: 24px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.08);
+      color: #cbd5e1;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .tv-empty-message.show {
+      display: block;
+    }
+
+    .tv-loading {
+      padding: 32px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.08);
+      color: #dbeafe;
+      font-size: 20px;
+      font-weight: 900;
+      text-align: center;
+    }
+
     @media (max-width: 680px) {
       .row, .stats {
         grid-template-columns: 1fr;
@@ -400,7 +798,12 @@
       }
 
       .teacher-subtabs {
-        grid-template-columns: 1fr;
+        display: flex;
+        overflow-x: auto;
+      }
+
+      .teacher-subtabs button {
+        min-width: 150px;
       }
 
       .session-list-controls {
@@ -434,6 +837,31 @@
       .result-table th:nth-child(3),
       .result-table td:nth-child(3) {
         width: 52px;
+      }
+
+      body.tv-mode {
+        overflow: auto;
+      }
+
+      .tv-screen {
+        min-width: auto;
+        min-height: 100vh;
+        height: auto;
+        grid-template-rows: auto 1fr;
+        padding: 20px;
+      }
+
+      .tv-topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .tv-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .tv-padlet-board {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -489,6 +917,12 @@
       </div>
 
       <div id="adminBox" class="hidden">
+        <div class="teacher-subtabs">
+          <button id="makeTab" class="active" onclick="showTeacherSection('make')" title="새 회차를 만들거나 현재 회차 제목과 안내 문구를 수정합니다.">회차 만들기/수정</button>
+          <button id="findTab" onclick="showTeacherSection('find')" title="저장된 기존 회차를 검색하고 CSV 저장, 활성화, 삭제를 합니다.">기존 회차 찾기</button>
+          <button id="resultsTab" onclick="showTeacherSection('results')" title="선택한 회차의 응답 통계와 의견을 확인합니다.">현재 조회 결과</button>
+        </div>
+
         <label>학생 접속용 고정 링크</label>
         <div class="copy-line">
           <input id="studentLink" readonly />
@@ -500,12 +934,6 @@
         </div>
 
         <div id="teacherMessage"></div>
-
-        <div class="teacher-subtabs">
-          <button id="makeTab" class="active" onclick="showTeacherSection('make')" title="새 회차를 만들거나 현재 회차 제목과 안내 문구를 수정합니다.">회차 만들기/수정</button>
-          <button id="findTab" onclick="showTeacherSection('find')" title="저장된 기존 회차를 검색하고 CSV 저장, 활성화, 삭제를 합니다.">기존 회차 찾기</button>
-          <button id="resultsTab" onclick="showTeacherSection('results')" title="선택한 회차의 응답 통계와 의견을 확인합니다.">현재 조회 결과</button>
-        </div>
 
         <div id="makeSection" class="teacher-section">
           <h3>회차 만들기 / 수정</h3>
@@ -592,6 +1020,59 @@
     </section>
   </main>
 
+
+  <section id="tvPage" class="tv-screen hidden">
+    <header class="tv-topbar">
+      <div class="tv-title">
+        <h1 id="tvTitle">Feel Score 결과</h1>
+        <p id="tvSubtitle">회차 정보를 불러오고 있습니다.</p>
+      </div>
+      <div class="tv-status"><span class="tv-status-dot"></span>TV 공유 화면</div>
+    </header>
+
+    <main class="tv-layout">
+      <section class="tv-panel tv-stats-panel">
+        <div class="tv-avg-card">
+          <div class="tv-avg-label">평균 점수</div>
+          <div class="tv-avg-score"><span id="tvAvgScore">-</span><span>점</span></div>
+        </div>
+
+        <div class="tv-mini-stats">
+          <div class="tv-mini-stat"><span>응답 수</span><strong id="tvCount">0</strong></div>
+          <div class="tv-mini-stat"><span>중앙값</span><strong id="tvMedian">-</strong></div>
+          <div class="tv-mini-stat"><span>최고</span><strong id="tvMax">-</strong></div>
+          <div class="tv-mini-stat"><span>최저</span><strong id="tvMin">-</strong></div>
+        </div>
+
+        <div>
+          <div class="tv-section-title">
+            <h2>점수 분포</h2>
+            <small>점수대별 응답 수</small>
+          </div>
+
+          <div id="tvDistribution" class="tv-dist-list">
+            <div class="tv-loading">점수 분포를 불러오고 있습니다.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tv-panel tv-board-panel">
+        <div class="tv-board-head">
+          <div>
+            <h2>서술형 응답 보드</h2>
+          </div>
+          <div id="tvFilters" class="tv-filter-chips"></div>
+        </div>
+
+        <div id="tvEmptyMessage" class="tv-empty-message">이 점수대에 해당하는 서술형 응답이 없습니다.</div>
+        <div id="tvOpinionBoard" class="tv-padlet-board">
+          <div class="tv-loading">서술형 응답을 불러오고 있습니다.</div>
+        </div>
+      </section>
+    </main>
+  </section>
+
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
@@ -647,6 +1128,214 @@
 
     function fixedStudentUrl() {
       return location.origin + location.pathname;
+    }
+
+    const TV_BANDS = [
+      { key: "very-high", label: "81~100", min: 81, max: 100, noteClass: "very-high", barClass: "tv-very-high-bar" },
+      { key: "high", label: "61~80", min: 61, max: 80, noteClass: "high", barClass: "tv-high-bar" },
+      { key: "mid", label: "41~60", min: 41, max: 60, noteClass: "mid", barClass: "tv-mid-bar" },
+      { key: "low", label: "21~40", min: 21, max: 40, noteClass: "low", barClass: "tv-low-bar" },
+      { key: "very-low", label: "0~20", min: 0, max: 20, noteClass: "very-low", barClass: "tv-very-low-bar" }
+    ];
+
+    let tvRows = [];
+    let tvFilter = "all";
+
+    function isTVMode() {
+      return new URLSearchParams(location.search).get("view") === "tv";
+    }
+
+    function tvUrl(sessionId) {
+      return `${fixedStudentUrl()}?view=tv&session=${encodeURIComponent(sessionId)}`;
+    }
+
+    window.openTVView = function(sessionId) {
+      window.open(tvUrl(sessionId), "_blank", "noopener,noreferrer");
+    };
+
+    function getScoreBand(score) {
+      const value = Number(score);
+
+      return TV_BANDS.find(band => value >= band.min && value <= band.max) || TV_BANDS[TV_BANDS.length - 1];
+    }
+
+    function formatShortTime(value) {
+      if (!value) return "-";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "-";
+      return date.toLocaleTimeString("ko-KR", {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function formatMedian(scores) {
+      if (scores.length === 0) return "-";
+      const sorted = [...scores].sort((a, b) => a - b);
+      const middle = Math.floor(sorted.length / 2);
+      const median = sorted.length % 2
+        ? sorted[middle]
+        : (sorted[middle - 1] + sorted[middle]) / 2;
+
+      return Number.isInteger(median) ? String(median) : median.toFixed(1);
+    }
+
+    function renderTVDistribution(rows) {
+      const counts = Object.fromEntries(TV_BANDS.map(band => [band.key, 0]));
+
+      rows.forEach(row => {
+        const band = getScoreBand(row.score);
+        counts[band.key] += 1;
+      });
+
+      const maxCount = Math.max(...Object.values(counts), 1);
+
+      $("tvDistribution").innerHTML = TV_BANDS.map(band => {
+        const count = counts[band.key] || 0;
+        const width = count === 0 ? 0 : Math.max(6, Math.round((count / maxCount) * 100));
+
+        return `
+          <div class="tv-dist-row">
+            <div class="tv-range">${band.label}</div>
+            <div class="tv-track"><div class="tv-bar ${band.barClass}" style="width: ${width}%;"></div></div>
+            <div class="tv-count">${count}명</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderTVFilters(rows) {
+      const counts = Object.fromEntries(TV_BANDS.map(band => [band.key, 0]));
+
+      rows.forEach(row => {
+        const band = getScoreBand(row.score);
+        counts[band.key] += 1;
+      });
+
+      const filters = [
+        { key: "all", label: `전체 ${rows.length}` },
+        ...TV_BANDS.map(band => ({ key: band.key, label: `${band.label} ${counts[band.key] || 0}` }))
+      ];
+
+      $("tvFilters").innerHTML = filters.map(filter => `
+        <button class="tv-chip ${filter.key === tvFilter ? "active" : ""}" data-filter="${filter.key}">
+          ${filter.label}
+        </button>
+      `).join("");
+
+      document.querySelectorAll(".tv-chip").forEach(button => {
+        button.addEventListener("click", () => {
+          tvFilter = button.dataset.filter || "all";
+          renderTVOpinionCards();
+        });
+      });
+    }
+
+    function renderTVOpinionCards() {
+      const filtered = tvRows.filter(row => {
+        if (tvFilter === "all") return true;
+        return getScoreBand(row.score).key === tvFilter;
+      });
+
+      document.querySelectorAll(".tv-chip").forEach(button => {
+        button.classList.toggle("active", button.dataset.filter === tvFilter);
+      });
+
+      $("tvEmptyMessage").classList.toggle("show", filtered.length === 0);
+
+      if (filtered.length === 0) {
+        $("tvOpinionBoard").innerHTML = "";
+        return;
+      }
+
+      $("tvOpinionBoard").innerHTML = filtered.map(row => {
+        const band = getScoreBand(row.score);
+
+        return `
+          <article class="tv-note ${band.noteClass}">
+            <div class="tv-note-head">
+              <span class="tv-note-name">${escapeHTML(row.nickname)}</span>
+              <span class="tv-note-score">${row.score}점</span>
+            </div>
+            <p class="tv-note-text">${escapeHTML(row.opinion)}</p>
+            <div class="tv-note-foot">
+              <span class="tv-tag">${band.label}점</span>
+              <span>${formatShortTime(row.createdAt)}</span>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderTVPage(meta, rows, sessionId) {
+      const title = meta.title || "Feel Score";
+      const created = meta.createdAt ? formatTime(meta.createdAt) : "-";
+      const scores = rows.map(row => row.score).filter(score => !Number.isNaN(score));
+      const count = rows.length;
+      const avg = scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : "-";
+      const max = scores.length ? Math.max(...scores) : "-";
+      const min = scores.length ? Math.min(...scores) : "-";
+
+      $("tvTitle").textContent = `${title} 결과`;
+      $("tvSubtitle").textContent = `${created} · 회차 코드 ${sessionId}`;
+      $("tvAvgScore").textContent = avg;
+      $("tvCount").textContent = String(count);
+      $("tvMedian").textContent = formatMedian(scores);
+      $("tvMax").textContent = String(max);
+      $("tvMin").textContent = String(min);
+
+      tvRows = rows;
+      tvFilter = "all";
+
+      renderTVDistribution(rows);
+      renderTVFilters(rows);
+      renderTVOpinionCards();
+    }
+
+    async function initTVPage() {
+      if (!isTVMode()) return;
+
+      document.body.classList.add("tv-mode");
+      document.querySelector("body > header")?.classList.add("hidden");
+      document.querySelector("body > main")?.classList.add("hidden");
+      $("tvPage").classList.remove("hidden");
+
+      const params = new URLSearchParams(location.search);
+      let sessionId = cleanText(params.get("session"), 40);
+
+      try {
+        if (!sessionId) {
+          const activeSnap = await get(ref(db, "appState/activeSession"));
+          sessionId = activeSnap.val() || "";
+        }
+
+        if (!sessionId) {
+          $("tvSubtitle").textContent = "불러올 회차가 없습니다.";
+          $("tvDistribution").innerHTML = `<div class="tv-loading">회차를 찾을 수 없습니다.</div>`;
+          $("tvOpinionBoard").innerHTML = `<div class="tv-loading">회차를 찾을 수 없습니다.</div>`;
+          return;
+        }
+
+        const metaSnap = await get(ref(db, `sessions/${sessionId}/meta`));
+        const responsesSnap = await get(ref(db, `sessions/${sessionId}/responses`));
+        const meta = metaSnap.val() || {};
+        const data = responsesSnap.val() || {};
+
+        const rows = Object.entries(data).map(([id, item]) => ({
+          id,
+          nickname: item.nickname || "",
+          score: Number(item.score),
+          opinion: item.opinion || "",
+          createdAt: item.createdAt || 0
+        })).sort((a, b) => b.createdAt - a.createdAt);
+
+        renderTVPage(meta, rows, sessionId);
+      } catch (error) {
+        console.error(error);
+        $("tvSubtitle").textContent = "결과를 불러오지 못했습니다.";
+        $("tvDistribution").innerHTML = `<div class="tv-loading">Firebase 설정과 Database 규칙을 확인하세요.</div>`;
+        $("tvOpinionBoard").innerHTML = `<div class="tv-loading">Firebase 설정과 Database 규칙을 확인하세요.</div>`;
+      }
     }
 
     function cleanText(text, maxLength) {
@@ -1014,6 +1703,7 @@
               <button class="small-btn" onclick="selectSession('${escapeHTML(item.sessionId)}')" title="이 회차의 응답 결과를 아래 표에 불러옵니다. 학생 입력 회차는 바뀌지 않습니다.">결과 보기</button>
               <button class="small-btn activate" onclick="activateSession('${escapeHTML(item.sessionId)}')" title="이 회차를 학생들이 입력할 현재 회차로 지정합니다.">활성화</button>
               <button class="small-btn csv" onclick="downloadSessionCSV('${escapeHTML(item.sessionId)}')" title="이 회차의 응답을 CSV 파일로 저장합니다. 아래 표에 불러오지 않아도 바로 저장할 수 있습니다.">CSV</button>
+              <button class="small-btn tv" onclick="openTVView('${escapeHTML(item.sessionId)}')" title="이 회차의 결과를 TV 공유용 별도 화면으로 엽니다.">TV 보기</button>
               <button class="small-btn delete" onclick="deleteSession('${escapeHTML(item.sessionId)}')" title="이 회차 전체를 삭제합니다. 현재 학생 입력 회차는 삭제할 수 없습니다.">삭제</button>
             </td>
           </tr>
@@ -1169,7 +1859,7 @@
 
       $("resultBody").innerHTML = currentRows.map(row => `
         <tr>
-          <td>${formatTime(row.createdAt)}</td>
+          <td class="date-cell">${formatTime(row.createdAt)}</td>
           <td>${escapeHTML(row.nickname)}</td>
           <td><strong>${row.score}</strong></td>
           <td class="opinion-cell">${escapeHTML(row.opinion)}</td>
@@ -1300,7 +1990,7 @@
           $("studentStatus").className = "notice info";
           $("studentStatus").textContent = "현재 입력이 가능합니다. 아래 내용을 작성한 뒤 제출하세요.";
           $("activeSessionInfo").className = "notice info";
-          $("activeSessionInfo").textContent = `현재 학생 입력 회차: ${activeSessionId}`;
+          $("activeSessionInfo").textContent = "현재 활성화된 회차 정보를 확인하고 있습니다.";
 
           if (!$("sessionIdInput").value) {
             $("sessionIdInput").value = activeSessionId;
@@ -1310,7 +2000,15 @@
 
           unsubscribeActiveMeta = onValue(ref(db, `sessions/${activeSessionId}/meta`), (metaSnapshot) => {
             const meta = metaSnapshot.val() || {};
+            const activeTitle = meta.title || "(제목 없음)";
+            const activeDate = meta.createdAt ? formatTime(meta.createdAt) : "-";
+
             $("opinion").placeholder = meta.opinionPlaceholder || DEFAULT_OPINION_PLACEHOLDER;
+            $("activeSessionInfo").innerHTML = `
+              현재 활성화된 회차: <strong>${escapeHTML(activeTitle)} · ${escapeHTML(activeDate)}</strong><br>
+              <span class="muted">회차 코드 ${escapeHTML(activeSessionId)} · 학생들이 지금 제출하면 이 회차에 저장됩니다.</span>
+            `;
+            renderSessionList();
           });
         } else {
           $("studentStatus").className = "notice error";
@@ -1327,6 +2025,7 @@
       });
     }
 
+    initTVPage();
     watchActiveSession();
   </script>
 </body>

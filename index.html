@@ -364,11 +364,11 @@
     th {
       background: #f5f6fa;
       font-weight: 900;
-      vertical-align: middle;
+      vertical-align: middle !important;
     }
 
     td {
-      vertical-align: middle;
+      vertical-align: middle !important;
     }
 
     .opinion-cell {
@@ -382,7 +382,7 @@
       white-space: pre-wrap;
       word-break: break-all;
       overflow-wrap: anywhere;
-      vertical-align: middle;
+      vertical-align: middle !important;
     }
 
     .result-table {
@@ -390,7 +390,7 @@
     }
 
     .result-table td {
-      vertical-align: middle;
+      vertical-align: middle !important;
     }
 
     .result-table th:nth-child(1),
@@ -1213,7 +1213,7 @@
         <div id="resultsSection" class="teacher-section hidden">
           <div class="section-heading-line">
             <h3>현재 조회 결과</h3>
-            <button class="tiny-tv-btn" onclick="openCurrentTVView()" title="현재 조회 중인 회차를 TV 공유용 화면으로 엽니다.">TV 보기</button>
+            <button type="button" class="tiny-tv-btn" onclick="openCurrentTVView()" title="현재 조회 중인 회차를 TV 공유용 화면으로 엽니다.">TV 보기</button>
           </div>
 
           <div class="stats">
@@ -1422,15 +1422,19 @@
       window.open(tvUrl(sessionId), "_blank", "noopener,noreferrer");
     };
 
-    window.openCurrentTVView = function() {
-      const silent = options && options.silent === true;
-      const sessionId = cleanText($("sessionIdInput").value, 40);
+    window.openCurrentTVView = async function() {
+      let sessionId = cleanText($("sessionIdInput").value, 40);
+
+      if (!sessionId) {
+        sessionId = await getActiveSessionIdOnce();
+      }
 
       if (!sessionId) {
         showMessage("teacherMessage", "TV로 볼 회차를 먼저 조회하세요.", "error");
         return;
       }
 
+      $("sessionIdInput").value = sessionId;
       openTVView(sessionId);
     };
 
@@ -1818,10 +1822,14 @@
         $("studentLink").value = fixedStudentUrl();
         showMessage("teacherMessage", "관리자 화면에 입장했습니다.", "success");
 
-        await preloadActiveSessionResult();
+        const preloaded = await preloadActiveSessionResult();
 
         showTeacherSection("make");
         loadSessionList();
+
+        if (!preloaded) {
+          console.warn("활성 회차 결과를 미리 불러오지 못했습니다.");
+        }
       } else {
         showMessage("teacherMessage", "비밀번호가 맞지 않습니다.", "error");
       }
@@ -1898,7 +1906,7 @@
 
       const responsesRef = ref(db, `sessions/${sessionId}/responses`);
 
-      unsubscribeResults = onValue(responsesRef, (snapshot) => {
+      const applyResponses = (snapshot) => {
         const data = snapshot.val() || {};
 
         currentRows = Object.entries(data).map(([id, item]) => ({
@@ -1910,13 +1918,30 @@
         })).sort((a, b) => b.createdAt - a.createdAt);
 
         renderResults();
+      };
+
+      try {
+        const initialSnap = await get(responsesRef);
+        applyResponses(initialSnap);
+      } catch (error) {
+        console.error(error);
         if (!silent) {
-          showTeacherSection("results");
+          showMessage("teacherMessage", "결과를 불러오지 못했습니다. Firebase 규칙을 확인하세요.", "error");
         }
+      }
+
+      unsubscribeResults = onValue(responsesRef, (snapshot) => {
+        applyResponses(snapshot);
       }, (error) => {
         console.error(error);
-        showMessage("teacherMessage", "결과를 불러오지 못했습니다. Firebase 규칙을 확인하세요.", "error");
+        if (!silent) {
+          showMessage("teacherMessage", "결과를 불러오지 못했습니다. Firebase 규칙을 확인하세요.", "error");
+        }
       });
+
+      if (!silent) {
+        showTeacherSection("results");
+      }
     };
 
     window.updateSessionMeta = async function() {
@@ -1953,7 +1978,6 @@
     };
 
     window.setActiveSessionFromInput = async function() {
-      const silent = options && options.silent === true;
       const sessionId = cleanText($("sessionIdInput").value, 40);
 
       if (!sessionId) {

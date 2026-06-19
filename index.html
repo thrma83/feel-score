@@ -506,6 +506,10 @@
       grid-template-columns: 350px 1fr;
       gap: 12px;
       min-height: 0;
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      padding: 0;
     }
 
     .tv-panel {
@@ -691,10 +695,11 @@
       overflow-y: auto;
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 10px;
+      gap: 12px;
       align-items: stretch;
       align-content: start;
       padding: 4px 8px 4px 2px;
+      width: 100%;
     }
 
     .tv-padlet-board::-webkit-scrollbar {
@@ -896,6 +901,10 @@
 
       .tv-layout {
         grid-template-columns: 1fr;
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding: 0;
       }
 
       .tv-padlet-board {
@@ -1560,6 +1569,13 @@
         showMessage("teacherMessage", "비밀번호가 맞지 않습니다.", "error");
       }
     };
+
+    $("adminPassword").addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        window.loginTeacher();
+      }
+    });
 
     window.createSession = async function() {
       const title = cleanText($("sessionTitle").value, 60) || "Feel Score";

@@ -464,7 +464,7 @@
       padding: 14px 18px;
       margin: 0 !important;
       display: grid;
-      grid-template-rows: 68px 1fr;
+      grid-template-rows: 88px 1fr;
       gap: 12px;
       background:
         radial-gradient(circle at 12% 16%, rgba(59,130,246,0.22), transparent 28%),
@@ -478,7 +478,8 @@
       justify-content: space-between;
       gap: 24px;
       border-bottom: 1px solid rgba(255,255,255,0.13);
-      padding-bottom: 12px;
+      padding: 10px 0 14px;
+      min-height: 88px;
     }
 
     .tv-title h1 {
@@ -489,7 +490,7 @@
     }
 
     .tv-title p {
-      margin: 8px 0 0;
+      margin: 10px 0 0;
       font-size: 17px;
       color: #cbd5e1;
     }
@@ -688,18 +689,22 @@
       gap: 8px;
       flex-wrap: wrap;
       justify-content: flex-end;
+      align-items: center;
     }
 
     .tv-chip {
+      width: 96px;
+      min-width: 96px;
       border: 1px solid rgba(255,255,255,0.14);
       border-radius: 999px;
-      padding: 8px 12px;
+      padding: 8px 8px;
       font-size: 13px;
       font-weight: 900;
       white-space: nowrap;
       cursor: pointer;
       color: #e5e7eb;
       background: rgba(255,255,255,0.09);
+      text-align: center;
     }
 
     .tv-chip.active {
@@ -787,7 +792,7 @@
     .tv-note-foot {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-end;
       gap: 8px;
       color: #64748b;
       font-size: 12px;
@@ -1305,8 +1310,8 @@
       const visibleBands = getVisibleTVBands(rows);
 
       const filters = [
-        { key: "all", label: `전체 ${rows.length}` },
-        ...visibleBands.map(band => ({ key: band.key, label: `${band.label} ${counts[band.key] || 0}` }))
+        { key: "all", label: `전체 ${rows.length}명` },
+        ...visibleBands.map(band => ({ key: band.key, label: `${band.label} ${counts[band.key] || 0}명` }))
       ];
 
       $("tvFilters").innerHTML = filters.map(filter => `
@@ -1351,7 +1356,6 @@
             </div>
             <p class="tv-note-text">${escapeHTML(row.opinion)}</p>
             <div class="tv-note-foot">
-              <span class="tv-tag">${band.label}점</span>
               <span>${formatShortTime(row.createdAt)}</span>
             </div>
           </article>

@@ -613,30 +613,66 @@
 
 
     .session-title-cell {
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      display: grid;
+      gap: 5px;
       min-width: 0;
-      flex-wrap: wrap;
       line-height: 1.35;
     }
 
     .session-title-text {
+      display: block;
       min-width: 0;
       overflow-wrap: anywhere;
+      font-weight: 500;
+    }
+
+    .session-badge-row {
+      display: grid;
+      grid-template-columns: 106px 82px;
+      gap: 8px;
+      align-items: center;
+      min-height: 24px;
+    }
+
+    .session-badge-slot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      min-width: 0;
+      min-height: 24px;
+    }
+
+    .session-badge-slot.empty {
+      visibility: hidden;
     }
 
     .session-title-cell .pill,
     .session-title-cell .duplicate-pill {
       margin-left: 0;
-      flex: 0 0 auto;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       min-height: 24px;
       line-height: 1;
       vertical-align: middle;
+      white-space: nowrap;
     }
+
+    .session-code-cell {
+      white-space: nowrap;
+    }
+
+
+    #sessionListBody td:nth-child(3),
+    #sessionListBody th:nth-child(3) {
+      min-width: 220px;
+    }
+
+    #sessionListBody td:nth-child(4),
+    #sessionListBody th:nth-child(4) {
+      min-width: 120px;
+    }
+
 
     .duplicate-pill {
       display: inline-flex;
@@ -1417,8 +1453,9 @@
         width: auto;
       }
 
-      .session-title-cell {
-        align-items: flex-start;
+      .session-badge-row {
+        grid-template-columns: auto auto;
+        justify-content: flex-start;
       }
 
       .qr-panel {
@@ -2872,6 +2909,7 @@
       $("sessionListBody").innerHTML = filtered.map(item => {
         const isActive = item.sessionId === activeSessionId;
         const activeMark = isActive ? "<span class=\"pill\">현재 입력 회차</span>" : "";
+        const activeSlotClass = isActive ? "session-badge-slot" : "session-badge-slot empty";
         const duplicateMark = item.allowDeviceDuplicate
           ? "<span class=\"duplicate-pill allow\">중복 허용</span>"
           : "<span class=\"duplicate-pill block\">중복 차단</span>";
@@ -2884,11 +2922,13 @@
             <td>
               <div class="session-title-cell">
                 <span class="session-title-text">${escapeHTML(item.title)}</span>
-                ${activeMark}
-                ${duplicateMark}
+                <div class="session-badge-row">
+                  <span class="${activeSlotClass}">${activeMark || "<span class=\"pill\">현재 입력 회차</span>"}</span>
+                  <span class="session-badge-slot">${duplicateMark}</span>
+                </div>
               </div>
             </td>
-            <td>${escapeHTML(item.sessionId)}</td>
+            <td class="session-code-cell">${escapeHTML(item.sessionId)}</td>
             <td class="session-action-cell">
               <button class="small-btn" onclick="selectSession('${escapeHTML(item.sessionId)}')" title="이 회차의 응답 결과를 아래 표에 불러옵니다. 학생 입력 회차는 바뀌지 않습니다.">결과 보기</button>
               <button class="small-btn activate" onclick="activateSession('${escapeHTML(item.sessionId)}')" title="이 회차를 학생들이 입력할 현재 회차로 지정합니다.">활성화</button>

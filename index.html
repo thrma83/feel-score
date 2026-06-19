@@ -323,6 +323,8 @@
 
     .qr-box {
       cursor: pointer;
+      font-size: 0;
+      line-height: 0;
     }
 
     .qr-box canvas,
@@ -371,6 +373,14 @@
 
     .qr-actions .download {
       background: #0097e6;
+    }
+
+
+    .qr-box canvas.hidden,
+    .qr-box img.hidden,
+    .qr-modal-card canvas.hidden,
+    .qr-modal-card img.hidden {
+      display: none !important;
     }
 
     .qr-message {
@@ -430,6 +440,24 @@
       word-break: break-all;
       overflow-wrap: anywhere;
       font-size: 14px;
+    }
+
+
+    .qr-modal-download {
+      margin-top: 16px;
+      width: 100%;
+      border: 0;
+      border-radius: 14px;
+      background: #273c75;
+      color: white;
+      padding: 13px 16px;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .qr-modal-download:hover {
+      background: #1f2f5d;
     }
 
     .qr-modal-close {
@@ -1324,7 +1352,7 @@
             <p>학생들이 이 QR코드를 찍으면 학생용 입력 화면으로 접속합니다. 현재 활성 회차에 자동 제출됩니다.</p>
             <div class="qr-actions">
               <button class="refresh" onclick="renderStudentQRCode()" title="학생 접속 링크로 QR코드를 다시 만듭니다.">QR 새로고침</button>
-              <button class="download" onclick="downloadStudentQRCode()" title="QR코드를 PNG 이미지 파일로 다운로드합니다.">QR 다운로드</button>
+              <button class="download" onclick="downloadStudentQRCode()" title="제목과 안내 문구가 포함된 큰 QR 이미지를 다운로드합니다.">확대 QR 다운로드</button>
             </div>
             <div id="qrMessage" class="qr-message">QR코드를 준비하고 있습니다.</div>
           </div>
@@ -1485,6 +1513,7 @@
       <canvas id="studentQrLargeCanvas" width="360" height="360"></canvas>
       <img id="studentQrLargeImage" class="hidden" alt="학생 접속 QR코드 확대" />
       <p id="studentQrLargeUrl"></p>
+      <button class="qr-modal-download" type="button" onclick="downloadStudentQRPoster()" title="제목과 안내 문구가 포함된 큰 QR 이미지를 다운로드합니다.">확대 이미지 다운로드</button>
     </div>
   </div>
 
@@ -1638,26 +1667,118 @@
       }
     };
 
-    window.downloadStudentQRCode = function() {
-      const url = fixedStudentUrl();
+    function drawRoundedRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+    }
 
-      let canvas = document.createElement("canvas");
-      const made = drawQRWithQRious(canvas, url, 720);
+    function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
+      const words = String(text).split("");
+      let line = "";
+      let currentY = y;
+
+      for (const char of words) {
+        const testLine = line + char;
+        if (ctx.measureText(testLine).width > maxWidth && line) {
+          ctx.fillText(line, x, currentY);
+          line = char;
+          currentY += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+
+      if (line) {
+        ctx.fillText(line, x, currentY);
+      }
+
+      return currentY;
+    }
+
+    function makeQRPosterCanvas() {
+      const url = fixedStudentUrl();
+      const poster = document.createElement("canvas");
+      poster.width = 900;
+      poster.height = 1120;
+
+      const ctx = poster.getContext("2d");
+      ctx.fillStyle = "#f5f6fa";
+      ctx.fillRect(0, 0, poster.width, poster.height);
+
+      ctx.fillStyle = "#ffffff";
+      drawRoundedRect(ctx, 60, 60, 780, 1000, 42);
+      ctx.fill();
+      ctx.strokeStyle = "#dcdde1";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.fillStyle = "#273c75";
+      ctx.font = "900 58px system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("Feel Score", 450, 150);
+
+      ctx.fillStyle = "#40739e";
+      ctx.font = "800 32px system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+      ctx.fillText("학생 접속 QR코드", 450, 205);
+
+      ctx.fillStyle = "#555555";
+      ctx.font = "700 24px system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+      ctx.fillText("QR코드를 찍고 오늘의 점수와 의견을 제출하세요.", 450, 255);
+
+      const qrCanvas = document.createElement("canvas");
+      const made = drawQRWithQRious(qrCanvas, url, 560);
 
       if (made) {
-        const link = document.createElement("a");
-        link.href = canvas.toDataURL("image/png");
-        link.download = "feel-score-student-qr.png";
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        showMessage("teacherMessage", "QR코드 PNG 파일을 다운로드했습니다.", "success");
+        ctx.fillStyle = "#ffffff";
+        drawRoundedRect(ctx, 160, 300, 580, 580, 28);
+        ctx.fill();
+        ctx.strokeStyle = "#e1e5eb";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.drawImage(qrCanvas, 170, 310, 560, 560);
+      }
+
+      ctx.fillStyle = "#273c75";
+      ctx.font = "900 28px system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+      ctx.fillText("학생용 입력 화면으로 바로 연결됩니다.", 450, 930);
+
+      ctx.fillStyle = "#666666";
+      ctx.font = "700 22px system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+      ctx.textAlign = "center";
+      drawWrappedText(ctx, url, 450, 980, 700, 34);
+
+      return poster;
+    }
+
+    window.downloadStudentQRPoster = function() {
+      if (!window.QRious) {
+        showMessage("teacherMessage", "확대 QR 다운로드 기능을 불러오지 못했습니다. 새로고침 후 다시 시도하세요.", "error");
         return;
       }
 
-      const qrUrl = makeQRImageUrl(url, 720);
-      window.open(qrUrl, "_blank", "noopener,noreferrer");
-      showMessage("teacherMessage", "QR코드 이미지를 새 창으로 열었습니다. 이미지에서 우클릭 또는 길게 눌러 저장하세요.", "info");
+      const poster = makeQRPosterCanvas();
+      const link = document.createElement("a");
+      link.href = poster.toDataURL("image/png");
+      link.download = "feel-score-student-qr-large.png";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      showMessage("teacherMessage", "확대용 QR 이미지를 다운로드했습니다.", "success");
+    };
+
+
+    window.downloadStudentQRCode = function() {
+      downloadStudentQRPoster();
     };
 
     window.openStudentQRModal = function() {

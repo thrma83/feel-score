@@ -442,12 +442,27 @@
     }
 
 
+    body.tv-mode #tvPage {
+      width: 100vw !important;
+      max-width: none !important;
+      margin: 0 !important;
+    }
+
+    body.tv-mode .tv-layout {
+      width: 100% !important;
+      max-width: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
     .tv-screen {
-      width: 100vw;
+      width: 100vw !important;
+      max-width: none !important;
       height: 100vh;
       min-width: 1280px;
       min-height: 720px;
-      padding: 14px 14px;
+      padding: 14px 18px;
+      margin: 0 !important;
       display: grid;
       grid-template-rows: 68px 1fr;
       gap: 12px;
@@ -502,14 +517,16 @@
     }
 
     .tv-layout {
-      display: grid;
-      grid-template-columns: 350px 1fr;
+      display: grid !important;
+      grid-template-columns: 350px minmax(0, 1fr);
       gap: 12px;
       min-height: 0;
-      width: 100%;
-      max-width: none;
-      margin: 0;
-      padding: 0;
+      width: 100% !important;
+      max-width: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      justify-self: stretch;
+      align-self: stretch;
     }
 
     .tv-panel {
@@ -646,6 +663,7 @@
     }
 
     .tv-board-panel {
+      width: 100%;
       display: grid;
       grid-template-rows: auto auto 1fr;
       gap: 10px;
@@ -901,10 +919,10 @@
 
       .tv-layout {
         grid-template-columns: 1fr;
-        width: 100%;
-        max-width: none;
-        margin: 0;
-        padding: 0;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
       }
 
       .tv-padlet-board {
@@ -955,7 +973,7 @@
 
       <div id="loginBox">
         <label for="adminPassword">관리자 비밀번호</label>
-        <input id="adminPassword" type="password" placeholder="비밀번호 입력" />
+        <input id="adminPassword" type="password" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter'||event.keyCode===13){event.preventDefault(); loginTeacher();}" />
         <button class="primary" onclick="loginTeacher()">관리자 입장</button>
 
         <div class="notice muted">
@@ -1080,7 +1098,7 @@
       <div class="tv-status"><span class="tv-status-dot"></span>TV 공유 화면</div>
     </header>
 
-    <main class="tv-layout">
+    <div class="tv-layout">
       <section class="tv-panel tv-stats-panel">
         <div class="tv-avg-card">
           <div class="tv-avg-label">평균 점수</div>
@@ -1119,7 +1137,7 @@
           <div class="tv-loading">서술형 응답을 불러오고 있습니다.</div>
         </div>
       </section>
-    </main>
+    </div>
   </section>
 
 
@@ -1570,12 +1588,15 @@
       }
     };
 
-    $("adminPassword").addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
+    function handleAdminPasswordEnter(event) {
+      if (event.key === "Enter" || event.keyCode === 13) {
         event.preventDefault();
         window.loginTeacher();
       }
-    });
+    }
+
+    $("adminPassword").addEventListener("keydown", handleAdminPasswordEnter);
+    $("adminPassword").addEventListener("keyup", handleAdminPasswordEnter);
 
     window.createSession = async function() {
       const title = cleanText($("sessionTitle").value, 60) || "Feel Score";

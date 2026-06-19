@@ -325,6 +325,7 @@
       cursor: pointer;
     }
 
+    .qr-box canvas,
     .qr-box img {
       width: 132px;
       height: 132px;
@@ -411,6 +412,7 @@
       color: #273c75;
     }
 
+    .qr-modal-card canvas,
     .qr-modal-card img {
       width: min(360px, 76vw);
       height: min(360px, 76vw);
@@ -1314,14 +1316,15 @@
 
         <div class="qr-panel">
           <div class="qr-box" onclick="openStudentQRModal()" title="QR코드를 크게 보려면 클릭하세요.">
-            <img id="studentQrImage" alt="학생 접속 QR코드" />
+            <canvas id="studentQrCanvas" width="132" height="132"></canvas>
+            <img id="studentQrImage" class="hidden" alt="학생 접속 QR코드" />
           </div>
           <div class="qr-info">
             <strong>학생 접속 QR코드</strong>
             <p>학생들이 이 QR코드를 찍으면 학생용 입력 화면으로 접속합니다. 현재 활성 회차에 자동 제출됩니다.</p>
             <div class="qr-actions">
               <button class="refresh" onclick="renderStudentQRCode()" title="학생 접속 링크로 QR코드를 다시 만듭니다.">QR 새로고침</button>
-              <button class="download" onclick="downloadStudentQRCode()" title="QR코드를 PNG 이미지로 저장합니다.">QR 다운로드</button>
+              <button class="download" onclick="downloadStudentQRCode()" title="QR코드를 PNG 이미지 파일로 다운로드합니다.">QR 다운로드</button>
             </div>
             <div id="qrMessage" class="qr-message">QR코드를 준비하고 있습니다.</div>
           </div>
@@ -1479,7 +1482,8 @@
     <div class="qr-modal-card">
       <button id="qrModalClose" class="qr-modal-close" type="button" title="닫기">×</button>
       <h3>학생 접속 QR코드</h3>
-      <img id="studentQrLargeImage" alt="학생 접속 QR코드 확대" />
+      <canvas id="studentQrLargeCanvas" width="360" height="360"></canvas>
+      <img id="studentQrLargeImage" class="hidden" alt="학생 접속 QR코드 확대" />
       <p id="studentQrLargeUrl"></p>
     </div>
   </div>
@@ -1497,6 +1501,8 @@
     </div>
   </div>
 
+
+  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -1569,8 +1575,26 @@
       return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&margin=10&data=${encodeURIComponent(url)}`;
     }
 
+    function drawQRWithQRious(canvas, url, size) {
+      if (!canvas || !window.QRious) return false;
+
+      new window.QRious({
+        element: canvas,
+        value: url,
+        size,
+        level: "H",
+        background: "white",
+        foreground: "#273c75",
+        padding: 10
+      });
+
+      return true;
+    }
+
     window.renderStudentQRCode = function() {
+      const canvas = $("studentQrCanvas");
       const img = $("studentQrImage");
+      const largeCanvas = $("studentQrLargeCanvas");
       const largeImg = $("studentQrLargeImage");
       const largeUrl = $("studentQrLargeUrl");
       const message = $("qrMessage");
@@ -1580,46 +1604,60 @@
         $("studentLink").value = url;
       }
 
-      if (!img) return;
+      const smallDrawn = drawQRWithQRious(canvas, url, 132);
+      const largeDrawn = drawQRWithQRious(largeCanvas, url, 360);
 
-      const smallSrc = makeQRImageUrl(url, 220);
-      const largeSrc = makeQRImageUrl(url, 520);
+      if (smallDrawn) {
+        canvas.classList.remove("hidden");
+        if (img) img.classList.add("hidden");
+      } else if (img) {
+        img.src = makeQRImageUrl(url, 220);
+        img.classList.remove("hidden");
+        if (canvas) canvas.classList.add("hidden");
+      }
 
-      img.onload = () => {
-        if (message) {
-          message.textContent = "QR코드가 생성되었습니다. QR코드를 클릭하면 크게 볼 수 있습니다.";
-        }
-      };
-
-      img.onerror = () => {
-        if (message) {
-          message.textContent = "QR코드를 불러오지 못했습니다. 인터넷 연결을 확인하거나 링크를 직접 복사하세요.";
-        }
-      };
-
-      img.src = smallSrc;
-
-      if (largeImg) {
-        largeImg.src = largeSrc;
+      if (largeDrawn) {
+        largeCanvas.classList.remove("hidden");
+        if (largeImg) largeImg.classList.add("hidden");
+      } else if (largeImg) {
+        largeImg.src = makeQRImageUrl(url, 520);
+        largeImg.classList.remove("hidden");
+        if (largeCanvas) largeCanvas.classList.add("hidden");
       }
 
       if (largeUrl) {
         largeUrl.textContent = url;
       }
+
+      if (message) {
+        if (smallDrawn) {
+          message.textContent = "QR코드가 생성되었습니다. QR코드를 클릭하면 크게 볼 수 있습니다.";
+        } else {
+          message.textContent = "QR코드가 이미지 방식으로 표시되었습니다. 다운로드가 안 되면 QR코드를 크게 연 뒤 길게 누르거나 우클릭해 저장하세요.";
+        }
+      }
     };
 
     window.downloadStudentQRCode = function() {
       const url = fixedStudentUrl();
-      const qrUrl = makeQRImageUrl(url, 520);
 
-      const link = document.createElement("a");
-      link.href = qrUrl;
-      link.target = "_blank";
-      link.rel = "noopener";
-      link.download = "feel-score-student-qr.png";
-      link.click();
+      let canvas = document.createElement("canvas");
+      const made = drawQRWithQRious(canvas, url, 720);
 
-      showMessage("teacherMessage", "QR코드 이미지를 새 창 또는 다운로드로 열었습니다.", "success");
+      if (made) {
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = "feel-score-student-qr.png";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        showMessage("teacherMessage", "QR코드 PNG 파일을 다운로드했습니다.", "success");
+        return;
+      }
+
+      const qrUrl = makeQRImageUrl(url, 720);
+      window.open(qrUrl, "_blank", "noopener,noreferrer");
+      showMessage("teacherMessage", "QR코드 이미지를 새 창으로 열었습니다. 이미지에서 우클릭 또는 길게 눌러 저장하세요.", "info");
     };
 
     window.openStudentQRModal = function() {

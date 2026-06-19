@@ -482,6 +482,126 @@
       line-height: 1;
     }
 
+
+    .opinion-setting-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 290px;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .opinion-setting-row textarea {
+      height: 110px;
+      min-height: 110px;
+      max-height: 110px;
+      resize: none;
+      display: block;
+    }
+
+    .duplicate-label-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 14px 0 6px;
+      height: 24px;
+    }
+
+    .duplicate-label-line label {
+      margin: 0;
+      height: 24px;
+      line-height: 24px;
+      white-space: nowrap;
+    }
+
+    .duplicate-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 104px;
+      height: 28px;
+      padding: 3px;
+      border-radius: 999px;
+      background: #e8edf5;
+      gap: 3px;
+      flex: 0 0 auto;
+    }
+
+    .duplicate-choice {
+      border: 0;
+      border-radius: 999px;
+      padding: 0;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      background: transparent;
+      color: #555;
+      line-height: 22px;
+    }
+
+    .duplicate-choice.allow.active {
+      background: #44bd32;
+      color: white;
+      box-shadow: 0 2px 6px rgba(68,189,50,0.25);
+    }
+
+    .duplicate-choice.block.active {
+      background: #c23616;
+      color: white;
+      box-shadow: 0 2px 6px rgba(194,54,22,0.25);
+    }
+
+    .duplicate-info-box {
+      height: 110px;
+      min-height: 110px;
+      max-height: 110px;
+      padding: 13px 14px;
+      border: 1px solid #dcdde1;
+      border-radius: 10px;
+      background: #f8fbff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      line-height: 1.45;
+      font-size: 14px;
+      color: #555;
+      overflow: hidden;
+    }
+
+    .duplicate-info-box strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 15px;
+      color: #207a16;
+    }
+
+    .duplicate-info-box.block {
+      background: #fff8f5;
+    }
+
+    .duplicate-info-box.block strong {
+      color: #a11a0a;
+    }
+
+    .duplicate-pill {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      vertical-align: middle;
+    }
+
+    .duplicate-pill.allow {
+      background: #eaf8e6;
+      color: #207a16;
+    }
+
+    .duplicate-pill.block {
+      background: #fdecea;
+      color: #a11a0a;
+    }
+
     .row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1178,6 +1298,17 @@
     }
 
     @media (max-width: 680px) {
+      .opinion-setting-row {
+        grid-template-columns: 1fr;
+      }
+
+      .opinion-setting-row textarea {
+        height: auto;
+        min-height: 110px;
+        max-height: none;
+        resize: vertical;
+      }
+
       .row, .stats {
         grid-template-columns: 1fr;
       }
@@ -1388,10 +1519,32 @@
             </div>
           </div>
 
-          <label for="opinionPlaceholder">학생 의견 입력 안내 문구</label>
-          <textarea id="opinionPlaceholder" maxlength="300">오늘의 기분, 좋았던 점, 아쉬웠던 점, 바라는 점을 자유롭게 적으세요.</textarea>
-          <div class="notice muted">
-            이 문구는 학생용 의견 입력칸의 예시 문구로 보입니다. 비워 두면 기본 문구가 사용됩니다.
+          <div class="opinion-setting-row">
+            <div>
+              <label for="opinionPlaceholder">학생 의견 입력 안내 문구</label>
+              <textarea id="opinionPlaceholder" maxlength="300">오늘의 기분, 좋았던 점, 아쉬웠던 점, 바라는 점을 자유롭게 적으세요.</textarea>
+              <div class="notice muted">
+                이 문구는 학생용 의견 입력칸의 예시 문구로 보입니다. 비워 두면 기본 문구가 사용됩니다.
+              </div>
+            </div>
+
+            <div>
+              <div class="duplicate-label-line">
+                <label>동일 기기 중복 응답</label>
+
+                <div class="duplicate-switch">
+                  <button type="button" id="allowDuplicateBtn" class="duplicate-choice allow active" onclick="setDuplicateMode(true)" title="같은 기기에서 여러 번 제출할 수 있게 합니다.">허용</button>
+                  <button type="button" id="blockDuplicateBtn" class="duplicate-choice block" onclick="setDuplicateMode(false)" title="같은 기기에서는 이 회차에 한 번만 제출할 수 있게 합니다.">차단</button>
+                </div>
+              </div>
+
+              <div id="duplicateInfo" class="duplicate-info-box">
+                <strong>현재 설정: 허용</strong>
+                같은 컴퓨터·태블릿·휴대폰에서 여러 번 제출할 수 있습니다.
+              </div>
+
+              <input id="allowDeviceDuplicate" type="hidden" value="true" />
+            </div>
           </div>
 
           <div class="button-grid">
@@ -2177,6 +2330,54 @@
       return `feelScoreSubmitted_${sessionId}`;
     }
 
+    function isDeviceDuplicateAllowed() {
+      return $("allowDeviceDuplicate").value !== "false";
+    }
+
+    window.setDuplicateMode = function(allow) {
+      const allowBtn = $("allowDuplicateBtn");
+      const blockBtn = $("blockDuplicateBtn");
+      const info = $("duplicateInfo");
+      const value = $("allowDeviceDuplicate");
+
+      if (!allowBtn || !blockBtn || !info || !value) return;
+
+      value.value = allow ? "true" : "false";
+
+      allowBtn.classList.toggle("active", allow);
+      blockBtn.classList.toggle("active", !allow);
+      info.classList.toggle("block", !allow);
+
+      if (allow) {
+        info.innerHTML = `
+          <strong>현재 설정: 허용</strong>
+          같은 컴퓨터·태블릿·휴대폰에서 여러 번 제출할 수 있습니다.
+        `;
+      } else {
+        info.innerHTML = `
+          <strong>현재 설정: 차단</strong>
+          같은 기기에서는 이 회차에 한 번만 제출할 수 있습니다.
+        `;
+      }
+    };
+
+    function updateStudentDuplicateStatus(sessionId, allowDeviceDuplicate) {
+      if (!sessionId) return;
+
+      if (!allowDeviceDuplicate && localStorage.getItem(submittedStorageKey(sessionId))) {
+        $("studentStatus").className = "notice error";
+        $("studentStatus").textContent = "이미 이 기기에서 이 회차에 제출했습니다. 다시 제출해야 한다면 선생님께 확인하세요.";
+        $("submitBtn").disabled = true;
+        return;
+      }
+
+      $("studentStatus").className = "notice info";
+      $("studentStatus").textContent = allowDeviceDuplicate
+        ? "현재 입력이 가능합니다. 아래 내용을 작성한 뒤 제출하세요."
+        : "현재 입력이 가능합니다. 이 회차는 같은 기기에서 한 번만 제출할 수 있습니다.";
+      $("submitBtn").disabled = false;
+    }
+
     $("scoreRange").addEventListener("input", (e) => updateScore(e.target.value));
     $("scoreNumber").addEventListener("input", (e) => updateScore(e.target.value));
 
@@ -2224,6 +2425,16 @@
           return;
         }
 
+        const meta = sessionSnap.val() || {};
+        const allowDeviceDuplicate = meta.allowDeviceDuplicate !== false;
+
+        if (!allowDeviceDuplicate && localStorage.getItem(submittedStorageKey(sessionId))) {
+          showMessage("studentMessage", "이미 이 기기에서 이 회차에 제출했습니다. 다시 제출해야 한다면 선생님께 확인하세요.", "error");
+          $("submitBtn").disabled = false;
+          updateStudentDuplicateStatus(sessionId, allowDeviceDuplicate);
+          return;
+        }
+
         const responseKey = `${safeNickname}_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
         const responseRef = ref(db, `sessions/${sessionId}/responses/${responseKey}`);
 
@@ -2234,11 +2445,14 @@
           createdAt: Date.now()
         });
 
+        localStorage.setItem(submittedStorageKey(sessionId), "true");
+
         $("nickname").value = "";
         $("opinion").value = "";
         updateScore(50);
 
         showMessage("studentMessage", "제출되었습니다. 소중한 의견 감사합니다.", "success");
+        updateStudentDuplicateStatus(sessionId, allowDeviceDuplicate);
       } catch (error) {
         console.error(error);
         showMessage("studentMessage", "제출 중 오류가 발생했습니다. Firebase 설정과 Database 규칙을 확인하세요.", "error");
@@ -2283,12 +2497,15 @@
     window.createSession = async function() {
       const title = cleanText($("sessionTitle").value, 60) || "Feel Score";
       const opinionPlaceholder = getOpinionPlaceholderInput();
+      const allowDeviceDuplicate = isDeviceDuplicateAllowed();
+      const allowDeviceDuplicate = isDeviceDuplicateAllowed();
       const sessionId = makeSessionId();
 
       try {
         await set(ref(db, `sessions/${sessionId}/meta`), {
           title,
           opinionPlaceholder,
+          allowDeviceDuplicate,
           createdAt: Date.now(),
           updatedAt: Date.now(),
           isOpen: true
@@ -2330,6 +2547,7 @@
           const meta = metaSnap.val() || {};
           $("sessionTitle").value = meta.title || "";
           $("opinionPlaceholder").value = meta.opinionPlaceholder || DEFAULT_OPINION_PLACEHOLDER;
+          setDuplicateMode(meta.allowDeviceDuplicate !== false);
         }
       } catch (error) {
         console.error(error);
@@ -2390,6 +2608,7 @@
 
       const title = cleanText($("sessionTitle").value, 60) || "Feel Score";
       const opinionPlaceholder = getOpinionPlaceholderInput();
+      const allowDeviceDuplicate = isDeviceDuplicateAllowed();
 
       try {
         const sessionSnap = await get(ref(db, `sessions/${sessionId}/meta`));
@@ -2402,6 +2621,7 @@
         await update(ref(db, `sessions/${sessionId}/meta`), {
           title,
           opinionPlaceholder,
+          allowDeviceDuplicate,
           updatedAt: Date.now()
         });
 
@@ -2450,6 +2670,7 @@
             sessionId,
             title: meta.title || "(제목 없음)",
             opinionPlaceholder: meta.opinionPlaceholder || DEFAULT_OPINION_PLACEHOLDER,
+            allowDeviceDuplicate: meta.allowDeviceDuplicate !== false,
             createdAt: meta.createdAt || 0,
             updatedAt: meta.updatedAt || 0
           };
@@ -2479,13 +2700,16 @@
       $("sessionListBody").innerHTML = filtered.map(item => {
         const isActive = item.sessionId === activeSessionId;
         const activeMark = isActive ? " <span class=\"pill\">현재 입력 회차</span>" : "";
+        const duplicateMark = item.allowDeviceDuplicate
+          ? " <span class=\"duplicate-pill allow\">중복 허용</span>"
+          : " <span class=\"duplicate-pill block\">중복 차단</span>";
         return `
           <tr>
             <td class="check-cell">
               <input type="checkbox" class="session-checkbox" value="${escapeHTML(item.sessionId)}" ${isActive ? "disabled" : ""} title="${isActive ? "현재 학생 입력 회차는 선택 삭제할 수 없습니다." : "삭제할 회차로 선택합니다."}" />
             </td>
             <td class="date-cell">${formatTime(item.createdAt)}</td>
-            <td>${escapeHTML(item.title)}${activeMark}</td>
+            <td>${escapeHTML(item.title)}${activeMark}${duplicateMark}</td>
             <td>${escapeHTML(item.sessionId)}</td>
             <td class="session-action-cell">
               <button class="small-btn" onclick="selectSession('${escapeHTML(item.sessionId)}')" title="이 회차의 응답 결과를 아래 표에 불러옵니다. 학생 입력 회차는 바뀌지 않습니다.">결과 보기</button>
@@ -2557,6 +2781,7 @@
           $("sessionIdInput").value = "";
           $("sessionTitle").value = "";
           $("opinionPlaceholder").value = DEFAULT_OPINION_PLACEHOLDER;
+          setDuplicateMode(true);
           currentRows = [];
           renderResults();
         }
@@ -2607,6 +2832,7 @@
           $("sessionIdInput").value = "";
           $("sessionTitle").value = "";
           $("opinionPlaceholder").value = DEFAULT_OPINION_PLACEHOLDER;
+          setDuplicateMode(true);
           currentRows = [];
           renderResults();
         }
@@ -2792,10 +3018,13 @@
             const activeTitle = meta.title || "(제목 없음)";
             const activeDate = meta.createdAt ? formatTime(meta.createdAt) : "-";
 
+            const allowDeviceDuplicate = meta.allowDeviceDuplicate !== false;
+
             $("opinion").placeholder = meta.opinionPlaceholder || DEFAULT_OPINION_PLACEHOLDER;
+            updateStudentDuplicateStatus(activeSessionId, allowDeviceDuplicate);
             $("activeSessionInfo").innerHTML = `
               현재 활성화된 회차: <strong>${escapeHTML(activeTitle)} · ${escapeHTML(activeDate)}</strong><br>
-              <span class="muted">회차 코드 ${escapeHTML(activeSessionId)} · 학생들이 지금 제출하면 이 회차에 저장됩니다.</span>
+              <span class="muted">회차 코드 ${escapeHTML(activeSessionId)} · 학생들이 지금 제출하면 이 회차에 저장됩니다. · 동일 기기 중복 ${allowDeviceDuplicate ? "허용" : "차단"}</span>
             `;
             renderSessionList();
           });
@@ -2805,6 +3034,7 @@
           $("activeSessionInfo").className = "notice error";
           $("activeSessionInfo").textContent = "현재 활성화된 학생 입력 회차가 없습니다.";
           $("opinion").placeholder = DEFAULT_OPINION_PLACEHOLDER;
+          $("submitBtn").disabled = true;
           renderSessionList();
         }
       }, (error) => {

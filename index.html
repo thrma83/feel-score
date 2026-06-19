@@ -266,6 +266,31 @@
       background: #c23616;
     }
 
+    .section-heading-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 24px 0 10px;
+    }
+
+    .section-heading-line h3 {
+      margin: 0;
+    }
+
+    .tiny-tv-btn {
+      width: auto;
+      border: 0;
+      border-radius: 999px;
+      background: #8e44ad;
+      color: white;
+      padding: 7px 12px;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
     .row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -417,10 +442,10 @@
       height: 100vh;
       min-width: 1280px;
       min-height: 720px;
-      padding: 28px 34px;
+      padding: 18px 22px;
       display: grid;
-      grid-template-rows: 82px 1fr;
-      gap: 20px;
+      grid-template-rows: 70px 1fr;
+      gap: 14px;
       background:
         radial-gradient(circle at 12% 16%, rgba(59,130,246,0.22), transparent 28%),
         radial-gradient(circle at 86% 12%, rgba(34,197,94,0.14), transparent 26%),
@@ -433,12 +458,12 @@
       justify-content: space-between;
       gap: 24px;
       border-bottom: 1px solid rgba(255,255,255,0.13);
-      padding-bottom: 18px;
+      padding-bottom: 12px;
     }
 
     .tv-title h1 {
       margin: 0;
-      font-size: 34px;
+      font-size: 31px;
       letter-spacing: -0.6px;
       line-height: 1.1;
     }
@@ -473,16 +498,16 @@
 
     .tv-layout {
       display: grid;
-      grid-template-columns: 420px 1fr;
-      gap: 22px;
+      grid-template-columns: 350px 1fr;
+      gap: 12px;
       min-height: 0;
     }
 
     .tv-panel {
       background: rgba(255,255,255,0.075);
       border: 1px solid rgba(255,255,255,0.13);
-      border-radius: 28px;
-      padding: 22px;
+      border-radius: 24px;
+      padding: 18px;
       box-shadow: 0 18px 48px rgba(0,0,0,0.25);
       backdrop-filter: blur(12px);
       min-height: 0;
@@ -491,13 +516,13 @@
     .tv-stats-panel {
       display: grid;
       grid-template-rows: auto auto 1fr;
-      gap: 16px;
+      gap: 12px;
     }
 
     .tv-avg-card {
       background: linear-gradient(135deg, #2563eb, #22c55e);
       border-radius: 26px;
-      padding: 28px 20px;
+      padding: 22px 18px;
       text-align: center;
       box-shadow: 0 16px 34px rgba(37,99,235,0.24);
     }
@@ -510,7 +535,7 @@
 
     .tv-avg-score {
       margin-top: 8px;
-      font-size: 86px;
+      font-size: 76px;
       font-weight: 1000;
       line-height: 1;
       letter-spacing: -3px;
@@ -545,7 +570,7 @@
     .tv-mini-stat strong {
       display: block;
       margin-top: 5px;
-      font-size: 30px;
+      font-size: 26px;
       color: white;
     }
 
@@ -614,7 +639,7 @@
     .tv-board-panel {
       display: grid;
       grid-template-rows: auto auto 1fr;
-      gap: 14px;
+      gap: 10px;
       overflow: hidden;
     }
 
@@ -622,7 +647,7 @@
       display: flex;
       align-items: end;
       justify-content: space-between;
-      gap: 16px;
+      gap: 12px;
     }
 
     .tv-board-head h2 {
@@ -660,8 +685,8 @@
       min-height: 0;
       overflow-y: auto;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
       align-content: start;
       padding: 4px 8px 4px 2px;
     }
@@ -677,10 +702,10 @@
 
     .tv-note {
       border-radius: 20px;
-      padding: 16px 17px;
+      padding: 14px 15px;
       color: #1f2937;
       box-shadow: 0 16px 30px rgba(0,0,0,0.22);
-      min-height: 132px;
+      min-height: 118px;
       display: grid;
       grid-template-rows: auto 1fr auto;
       gap: 10px;
@@ -725,7 +750,7 @@
     .tv-note-text {
       margin: 0;
       line-height: 1.52;
-      font-size: 15px;
+      font-size: 14px;
       word-break: keep-all;
     }
 
@@ -782,7 +807,7 @@
       }
 
       header p {
-        font-size: 15px;
+        font-size: 14px;
       }
 
       .card {
@@ -919,8 +944,8 @@
       <div id="adminBox" class="hidden">
         <div class="teacher-subtabs">
           <button id="makeTab" class="active" onclick="showTeacherSection('make')" title="새 회차를 만들거나 현재 회차 제목과 안내 문구를 수정합니다.">회차 만들기/수정</button>
-          <button id="findTab" onclick="showTeacherSection('find')" title="저장된 기존 회차를 검색하고 CSV 저장, 활성화, 삭제를 합니다.">기존 회차 찾기</button>
           <button id="resultsTab" onclick="showTeacherSection('results')" title="선택한 회차의 응답 통계와 의견을 확인합니다.">현재 조회 결과</button>
+          <button id="findTab" onclick="showTeacherSection('find')" title="저장된 기존 회차를 검색하고 CSV 저장, 활성화, 삭제를 합니다.">기존 회차 찾기</button>
         </div>
 
         <label>학생 접속용 고정 링크</label>
@@ -993,7 +1018,10 @@
         </div>
 
         <div id="resultsSection" class="teacher-section hidden">
-          <h3>현재 조회 결과</h3>
+          <div class="section-heading-line">
+            <h3>현재 조회 결과</h3>
+            <button class="tiny-tv-btn" onclick="openCurrentTVView()" title="현재 조회 중인 회차를 TV 공유용 화면으로 엽니다.">TV 보기</button>
+          </div>
 
           <div class="stats">
             <div class="stat">응답 수<strong id="countStat">0</strong></div>
@@ -1153,6 +1181,17 @@
       window.open(tvUrl(sessionId), "_blank", "noopener,noreferrer");
     };
 
+    window.openCurrentTVView = function() {
+      const sessionId = cleanText($("sessionIdInput").value, 40);
+
+      if (!sessionId) {
+        showMessage("teacherMessage", "TV로 볼 회차를 먼저 조회하세요.", "error");
+        return;
+      }
+
+      openTVView(sessionId);
+    };
+
     function getScoreBand(score) {
       const value = Number(score);
 
@@ -1180,7 +1219,7 @@
       return Number.isInteger(median) ? String(median) : median.toFixed(1);
     }
 
-    function renderTVDistribution(rows) {
+    function getTVBandCounts(rows) {
       const counts = Object.fromEntries(TV_BANDS.map(band => [band.key, 0]));
 
       rows.forEach(row => {
@@ -1188,11 +1227,28 @@
         counts[band.key] += 1;
       });
 
-      const maxCount = Math.max(...Object.values(counts), 1);
+      return counts;
+    }
 
-      $("tvDistribution").innerHTML = TV_BANDS.map(band => {
+    function getVisibleTVBands(rows) {
+      const counts = getTVBandCounts(rows);
+      return TV_BANDS.filter(band => (counts[band.key] || 0) > 0);
+    }
+
+    function renderTVDistribution(rows) {
+      const counts = getTVBandCounts(rows);
+      const visibleBands = getVisibleTVBands(rows);
+
+      if (visibleBands.length === 0) {
+        $("tvDistribution").innerHTML = `<div class="tv-loading">표시할 점수 분포가 없습니다.</div>`;
+        return;
+      }
+
+      const maxCount = Math.max(...visibleBands.map(band => counts[band.key] || 0), 1);
+
+      $("tvDistribution").innerHTML = visibleBands.map(band => {
         const count = counts[band.key] || 0;
-        const width = count === 0 ? 0 : Math.max(6, Math.round((count / maxCount) * 100));
+        const width = Math.max(6, Math.round((count / maxCount) * 100));
 
         return `
           <div class="tv-dist-row">
@@ -1205,16 +1261,12 @@
     }
 
     function renderTVFilters(rows) {
-      const counts = Object.fromEntries(TV_BANDS.map(band => [band.key, 0]));
-
-      rows.forEach(row => {
-        const band = getScoreBand(row.score);
-        counts[band.key] += 1;
-      });
+      const counts = getTVBandCounts(rows);
+      const visibleBands = getVisibleTVBands(rows);
 
       const filters = [
         { key: "all", label: `전체 ${rows.length}` },
-        ...TV_BANDS.map(band => ({ key: band.key, label: `${band.label} ${counts[band.key] || 0}` }))
+        ...visibleBands.map(band => ({ key: band.key, label: `${band.label} ${counts[band.key] || 0}` }))
       ];
 
       $("tvFilters").innerHTML = filters.map(filter => `
@@ -1435,13 +1487,6 @@
         return;
       }
 
-      const localKey = submittedStorageKey(sessionId);
-
-      if (localStorage.getItem(localKey)) {
-        showMessage("studentMessage", "이 기기에서는 이미 제출했습니다. 중복 제출은 할 수 없습니다.", "error");
-        return;
-      }
-
       const safeNickname = makeSafeKey(nickname);
 
       if (!safeNickname) {
@@ -1460,28 +1505,15 @@
           return;
         }
 
-        const responseRef = ref(db, `sessions/${sessionId}/responses/${safeNickname}`);
+        const responseKey = `${safeNickname}_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+        const responseRef = ref(db, `sessions/${sessionId}/responses/${responseKey}`);
 
-        const result = await runTransaction(responseRef, (currentData) => {
-          if (currentData !== null) {
-            return;
-          }
-
-          return {
-            nickname,
-            score,
-            opinion,
-            createdAt: Date.now()
-          };
+        await set(responseRef, {
+          nickname,
+          score,
+          opinion,
+          createdAt: Date.now()
         });
-
-        if (!result.committed) {
-          showMessage("studentMessage", "이미 제출한 닉네임입니다. 중복 제출은 할 수 없습니다.", "error");
-          $("submitBtn").disabled = false;
-          return;
-        }
-
-        localStorage.setItem(localKey, "true");
 
         $("nickname").value = "";
         $("opinion").value = "";
@@ -1507,9 +1539,9 @@
 
         if (activeSessionId && !$("sessionIdInput").value) {
           $("sessionIdInput").value = activeSessionId;
-          loadSession();
         }
 
+        showTeacherSection("make");
         loadSessionList();
       } else {
         showMessage("teacherMessage", "비밀번호가 맞지 않습니다.", "error");
@@ -2025,8 +2057,11 @@
       });
     }
 
-    initTVPage();
-    watchActiveSession();
+    if (isTVMode()) {
+      initTVPage();
+    } else {
+      watchActiveSession();
+    }
   </script>
 </body>
 </html>

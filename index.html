@@ -11,6 +11,19 @@
       scrollbar-gutter: stable;
     }
 
+
+    html, body {
+      max-width: 100%;
+    }
+
+    img, canvas {
+      max-width: 100%;
+    }
+
+    input, textarea, button {
+      max-width: 100%;
+    }
+
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -1437,6 +1450,126 @@
     }
 
     @media (max-width: 680px) {
+
+      body {
+        overflow-x: hidden;
+      }
+
+      main {
+        width: 100%;
+        margin: 14px auto;
+        padding: 0 10px 28px;
+      }
+
+      .tabs {
+        gap: 6px;
+      }
+
+      .tabs button {
+        padding: 12px 8px;
+        font-size: 15px;
+      }
+
+      h2 {
+        font-size: 21px;
+      }
+
+      h3 {
+        font-size: 17px;
+      }
+
+      label {
+        font-size: 14px;
+      }
+
+      input, textarea, button {
+        font-size: 16px;
+      }
+
+      .score-box {
+        display: grid;
+        grid-template-columns: 1fr 78px;
+        gap: 8px;
+      }
+
+      .score-number {
+        width: 78px;
+      }
+
+      .section-heading-line {
+        align-items: stretch;
+        gap: 8px;
+      }
+
+      .tiny-tv-btn {
+        width: auto;
+        min-width: 84px;
+      }
+
+      .teacher-section table {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-collapse: separate;
+        border-spacing: 0;
+      }
+
+      .teacher-section table thead,
+      .teacher-section table tbody {
+        display: table;
+        min-width: 720px;
+        width: 100%;
+      }
+
+      .teacher-section th,
+      .teacher-section td {
+        padding: 9px 7px;
+      }
+
+      #sessionListBody td:nth-child(3),
+      #sessionListBody th:nth-child(3) {
+        min-width: 210px;
+      }
+
+      #sessionListBody td:nth-child(4),
+      #sessionListBody th:nth-child(4) {
+        min-width: 128px;
+      }
+
+      #sessionListBody td:nth-child(5),
+      #sessionListBody th:nth-child(5) {
+        min-width: 210px;
+      }
+
+      .session-action-cell {
+        white-space: normal;
+      }
+
+      .session-action-cell button {
+        margin: 2px;
+        padding: 7px 8px;
+        font-size: 12px;
+      }
+
+      .result-table {
+        display: table !important;
+        table-layout: fixed;
+        min-width: 0;
+      }
+
+      .result-table thead,
+      .result-table tbody {
+        display: table-header-group;
+        min-width: 0;
+        width: auto;
+      }
+
+      .result-table tbody {
+        display: table-row-group;
+      }
+
       .opinion-setting-row {
         grid-template-columns: 1fr;
       }
@@ -1531,12 +1664,20 @@
 
       .result-table th:nth-child(2),
       .result-table td:nth-child(2) {
-        width: 82px;
+        width: 76px;
+        word-break: break-all;
       }
 
       .result-table th:nth-child(3),
       .result-table td:nth-child(3) {
-        width: 52px;
+        width: 46px;
+        padding-left: 4px;
+        padding-right: 4px;
+      }
+
+      .result-table th:nth-child(4),
+      .result-table td:nth-child(4) {
+        width: auto;
       }
 
       body.tv-mode {
@@ -1566,6 +1707,34 @@
 
       .tv-padlet-board {
         grid-template-columns: 1fr;
+      }
+
+
+      .tv-stat-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .tv-score-filters {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .tv-score-filter {
+        width: 100%;
+      }
+
+      .tv-card {
+        min-height: 0;
+      }
+
+      .tv-modal-card {
+        width: min(92vw, 720px);
+        max-height: 86vh;
+        padding: 22px;
+      }
+
+      .tv-modal-text {
+        font-size: 20px;
       }
     }
   </style>

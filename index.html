@@ -321,10 +321,15 @@
       overflow: hidden;
     }
 
-    .qr-box canvas {
-      width: 132px !important;
-      height: 132px !important;
+    .qr-box {
+      cursor: pointer;
+    }
+
+    .qr-box img {
+      width: 132px;
+      height: 132px;
       display: block;
+      object-fit: contain;
     }
 
     .qr-info strong {
@@ -371,6 +376,74 @@
       margin-top: 8px;
       color: #666;
       font-size: 13px;
+    }
+
+
+    .qr-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(6px);
+    }
+
+    .qr-modal.hidden {
+      display: none !important;
+    }
+
+    .qr-modal-card {
+      position: relative;
+      width: min(520px, 92vw);
+      border-radius: 28px;
+      background: white;
+      padding: 30px;
+      box-shadow: 0 28px 80px rgba(0,0,0,0.35);
+      text-align: center;
+    }
+
+    .qr-modal-card h3 {
+      margin: 0 48px 16px;
+      font-size: 22px;
+      color: #273c75;
+    }
+
+    .qr-modal-card img {
+      width: min(360px, 76vw);
+      height: min(360px, 76vw);
+      object-fit: contain;
+      border: 1px solid #dcdde1;
+      border-radius: 20px;
+      padding: 12px;
+      background: white;
+    }
+
+    .qr-modal-card p {
+      margin: 14px 0 0;
+      color: #555;
+      line-height: 1.5;
+      word-break: break-all;
+      overflow-wrap: anywhere;
+      font-size: 14px;
+    }
+
+    .qr-modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 999px;
+      background: #f1f2f6;
+      color: #222;
+      font-size: 25px;
+      font-weight: 1000;
+      cursor: pointer;
+      line-height: 1;
     }
 
     .row {
@@ -1240,8 +1313,8 @@
         </div>
 
         <div class="qr-panel">
-          <div class="qr-box">
-            <canvas id="studentQrCanvas" width="132" height="132"></canvas>
+          <div class="qr-box" onclick="openStudentQRModal()" title="QR코드를 크게 보려면 클릭하세요.">
+            <img id="studentQrImage" alt="학생 접속 QR코드" />
           </div>
           <div class="qr-info">
             <strong>학생 접속 QR코드</strong>
@@ -1401,6 +1474,17 @@
   </section>
 
 
+
+  <div id="qrModal" class="qr-modal hidden">
+    <div class="qr-modal-card">
+      <button id="qrModalClose" class="qr-modal-close" type="button" title="닫기">×</button>
+      <h3>학생 접속 QR코드</h3>
+      <img id="studentQrLargeImage" alt="학생 접속 QR코드 확대" />
+      <p id="studentQrLargeUrl"></p>
+    </div>
+  </div>
+
+
   <div id="tvModal" class="tv-modal hidden">
     <div id="tvModalCard" class="tv-modal-card">
       <button id="tvModalClose" class="tv-modal-close" type="button" title="닫기">×</button>
@@ -1413,8 +1497,6 @@
     </div>
   </div>
 
-
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -1483,56 +1565,78 @@
       return location.origin + location.pathname;
     }
 
-    window.renderStudentQRCode = async function() {
-      const canvas = $("studentQrCanvas");
+    function makeQRImageUrl(url, size = 220) {
+      return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&margin=10&data=${encodeURIComponent(url)}`;
+    }
+
+    window.renderStudentQRCode = function() {
+      const img = $("studentQrImage");
+      const largeImg = $("studentQrLargeImage");
+      const largeUrl = $("studentQrLargeUrl");
       const message = $("qrMessage");
-
-      if (!canvas) return;
-
       const url = fixedStudentUrl();
 
       if ($("studentLink")) {
         $("studentLink").value = url;
       }
 
-      try {
-        if (!window.QRCode || !window.QRCode.toCanvas) {
-          throw new Error("QR 라이브러리를 불러오지 못했습니다.");
-        }
+      if (!img) return;
 
-        await window.QRCode.toCanvas(canvas, url, {
-          width: 132,
-          margin: 1,
-          color: {
-            dark: "#273c75",
-            light: "#ffffff"
-          }
-        });
+      const smallSrc = makeQRImageUrl(url, 220);
+      const largeSrc = makeQRImageUrl(url, 520);
 
+      img.onload = () => {
         if (message) {
-          message.textContent = "QR코드가 생성되었습니다.";
+          message.textContent = "QR코드가 생성되었습니다. QR코드를 클릭하면 크게 볼 수 있습니다.";
         }
-      } catch (error) {
-        console.error(error);
+      };
+
+      img.onerror = () => {
         if (message) {
-          message.textContent = "QR코드를 만들지 못했습니다. 인터넷 연결 또는 QR 라이브러리 로딩을 확인하세요.";
+          message.textContent = "QR코드를 불러오지 못했습니다. 인터넷 연결을 확인하거나 링크를 직접 복사하세요.";
         }
+      };
+
+      img.src = smallSrc;
+
+      if (largeImg) {
+        largeImg.src = largeSrc;
+      }
+
+      if (largeUrl) {
+        largeUrl.textContent = url;
       }
     };
 
     window.downloadStudentQRCode = function() {
-      const canvas = $("studentQrCanvas");
-
-      if (!canvas) {
-        showMessage("teacherMessage", "다운로드할 QR코드가 없습니다.", "error");
-        return;
-      }
+      const url = fixedStudentUrl();
+      const qrUrl = makeQRImageUrl(url, 520);
 
       const link = document.createElement("a");
-      link.href = canvas.toDataURL("image/png");
+      link.href = qrUrl;
+      link.target = "_blank";
+      link.rel = "noopener";
       link.download = "feel-score-student-qr.png";
       link.click();
+
+      showMessage("teacherMessage", "QR코드 이미지를 새 창 또는 다운로드로 열었습니다.", "success");
     };
+
+    window.openStudentQRModal = function() {
+      renderStudentQRCode();
+      $("qrModal").classList.remove("hidden");
+    };
+
+    window.closeStudentQRModal = function() {
+      $("qrModal").classList.add("hidden");
+    };
+
+    $("qrModalClose").addEventListener("click", closeStudentQRModal);
+    $("qrModal").addEventListener("click", (event) => {
+      if (event.target.id === "qrModal") {
+        closeStudentQRModal();
+      }
+    });
 
     async function getActiveSessionIdOnce() {
       if (activeSessionId) return activeSessionId;
@@ -1720,6 +1824,7 @@
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
         closeTVResponseModal();
+        closeStudentQRModal();
       }
     });
 

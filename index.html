@@ -309,6 +309,7 @@
       align-items: center;
     }
 
+
     .qr-box {
       width: 148px;
       height: 148px;
@@ -320,6 +321,7 @@
       border: 1px solid #dcdde1;
       overflow: hidden;
     }
+
 
     .qr-box {
       cursor: pointer;
@@ -384,9 +386,12 @@
     }
 
     .qr-message {
-      margin-top: 8px;
+      margin: 2px 0 10px;
       color: #666;
       font-size: 13px;
+      line-height: 1.35;
+      text-align: left;
+      word-break: keep-all;
     }
 
 
@@ -1220,6 +1225,10 @@
         text-align: center;
       }
 
+      .qr-message {
+        text-align: center;
+      }
+
       .qr-actions {
         justify-content: center;
       }
@@ -1343,18 +1352,18 @@
         </div>
 
         <div class="qr-panel">
-          <div class="qr-box" onclick="openStudentQRModal()" title="QR코드를 크게 보려면 클릭하세요.">
+          <div class="qr-box">
             <canvas id="studentQrCanvas" width="132" height="132"></canvas>
             <img id="studentQrImage" class="hidden" alt="학생 접속 QR코드" />
           </div>
           <div class="qr-info">
             <strong>학생 접속 QR코드</strong>
             <p>학생들이 이 QR코드를 찍으면 학생용 입력 화면으로 접속합니다. 현재 활성 회차에 자동 제출됩니다.</p>
+            <div id="qrMessage" class="qr-message">QR코드를 준비하고 있습니다.</div>
             <div class="qr-actions">
               <button class="refresh" onclick="renderStudentQRCode()" title="학생 접속 링크로 QR코드를 다시 만듭니다.">QR 새로고침</button>
-              <button class="download" onclick="downloadStudentQRCode()" title="제목과 안내 문구가 포함된 큰 QR 이미지를 다운로드합니다.">확대 QR 다운로드</button>
+              <button class="download" onclick="downloadStudentQRCode()" title="제목과 안내 문구가 포함된 큰 QR 이미지를 다운로드합니다.">QR 다운로드</button>
             </div>
-            <div id="qrMessage" class="qr-message">QR코드를 준비하고 있습니다.</div>
           </div>
         </div>
 
@@ -1761,7 +1770,7 @@
 
     window.downloadStudentQRPoster = function() {
       if (!window.QRious) {
-        showMessage("teacherMessage", "확대 QR 다운로드 기능을 불러오지 못했습니다. 새로고침 후 다시 시도하세요.", "error");
+        showMessage("teacherMessage", "QR 다운로드 기능을 불러오지 못했습니다. 새로고침 후 다시 시도하세요.", "error");
         return;
       }
 

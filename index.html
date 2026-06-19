@@ -358,13 +358,17 @@
     th, td {
       border-bottom: 1px solid #eee;
       padding: 10px 8px;
-      vertical-align: top;
       text-align: left;
     }
 
     th {
       background: #f5f6fa;
       font-weight: 900;
+      vertical-align: middle;
+    }
+
+    td {
+      vertical-align: middle;
     }
 
     .opinion-cell {
@@ -374,8 +378,19 @@
       line-height: 1.5;
     }
 
+    .result-table .opinion-cell {
+      white-space: pre-wrap;
+      word-break: break-all;
+      overflow-wrap: anywhere;
+      vertical-align: middle;
+    }
+
     .result-table {
       table-layout: fixed;
+    }
+
+    .result-table td {
+      vertical-align: middle;
     }
 
     .result-table th:nth-child(1),
@@ -1343,10 +1358,45 @@
         $(`${name}Section`).classList.toggle("hidden", name !== section);
         $(`${name}Tab`).classList.toggle("active", name === section);
       });
+
+      if (section === "results") {
+        const selectedSessionId = cleanText($("sessionIdInput").value, 40);
+
+        if (selectedSessionId) {
+          loadSession({ silent: true });
+        } else {
+          preloadActiveSessionResult();
+        }
+      }
     };
 
     function fixedStudentUrl() {
       return location.origin + location.pathname;
+    }
+
+    async function getActiveSessionIdOnce() {
+      if (activeSessionId) return activeSessionId;
+
+      try {
+        const activeSnap = await get(ref(db, "appState/activeSession"));
+        activeSessionId = activeSnap.val() || "";
+        return activeSessionId;
+      } catch (error) {
+        console.error(error);
+        return "";
+      }
+    }
+
+    async function preloadActiveSessionResult() {
+      const sessionId = await getActiveSessionIdOnce();
+
+      if (!sessionId) {
+        return false;
+      }
+
+      $("sessionIdInput").value = sessionId;
+      await loadSession({ silent: true });
+      return true;
     }
 
     const TV_BANDS = [
@@ -1768,10 +1818,7 @@
         $("studentLink").value = fixedStudentUrl();
         showMessage("teacherMessage", "관리자 화면에 입장했습니다.", "success");
 
-        if (activeSessionId && !$("sessionIdInput").value) {
-          $("sessionIdInput").value = activeSessionId;
-          await loadSession({ silent: true });
-        }
+        await preloadActiveSessionResult();
 
         showTeacherSection("make");
         loadSessionList();
@@ -1824,7 +1871,9 @@
       const sessionId = cleanText($("sessionIdInput").value, 40);
 
       if (!sessionId) {
-        showMessage("teacherMessage", "조회할 회차 코드를 입력하세요.", "error");
+        if (!silent) {
+          showMessage("teacherMessage", "조회할 회차 코드를 입력하세요.", "error");
+        }
         return;
       }
 
@@ -1871,7 +1920,6 @@
     };
 
     window.updateSessionMeta = async function() {
-      const silent = options && options.silent === true;
       const sessionId = cleanText($("sessionIdInput").value, 40);
 
       if (!sessionId) {
@@ -2234,7 +2282,6 @@
     };
 
     window.clearResponses = async function() {
-      const silent = options && options.silent === true;
       const sessionId = cleanText($("sessionIdInput").value, 40);
 
       if (!sessionId) {

@@ -1578,8 +1578,53 @@
       white-space: pre-wrap;
     }
 
-    .tv-modal-time {
+    .tv-modal-foot {
       margin-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .tv-modal-like-btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 8px 14px;
+      min-width: 54px;
+      background: rgba(255,255,255,0.70);
+      color: #1f2937;
+      font-size: 18px;
+      font-weight: 1000;
+      line-height: 1.1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: default;
+      white-space: nowrap;
+    }
+
+    .tv-modal-like-btn.clickable {
+      cursor: pointer;
+    }
+
+    .tv-modal-like-btn.clickable:hover {
+      background: rgba(255,255,255,0.95);
+      transform: translateY(-1px);
+    }
+
+    .tv-modal-like-btn.liked {
+      background: #2563eb;
+      color: white;
+      box-shadow: 0 5px 14px rgba(37,99,235,0.24);
+    }
+
+    .tv-modal-like-btn.own {
+      opacity: 0.50;
+      cursor: not-allowed;
+    }
+
+    .tv-modal-time {
       text-align: right;
       font-size: 17px;
       font-weight: 900;
@@ -2070,6 +2115,15 @@
       .tv-modal-text {
         font-size: 20px;
       }
+
+      .tv-modal-foot {
+        align-items: flex-start;
+      }
+
+      .tv-modal-like-btn {
+        font-size: 16px;
+        padding: 7px 12px;
+      }
     }
   </style>
 </head>
@@ -2358,7 +2412,10 @@
         <div id="tvModalScore" class="tv-modal-score">0점</div>
       </div>
       <p id="tvModalText" class="tv-modal-text"></p>
-      <div id="tvModalTime" class="tv-modal-time"></div>
+      <div class="tv-modal-foot">
+        <button id="tvModalLikeBtn" type="button" class="tv-modal-like-btn" title="공감 수">👍</button>
+        <div id="tvModalTime" class="tv-modal-time"></div>
+      </div>
     </div>
   </div>
 
@@ -2677,6 +2734,7 @@
     let tvFilter = "all";
     let tvSessionId = "";
     let tvMeta = {};
+    let tvModalResponseId = "";
     let currentResultOpen = false;
 
     function isTVMode() {
@@ -2843,6 +2901,55 @@
       return count > 0 ? `👍 ${count}` : "👍";
     }
 
+    function likeButtonClass(row, baseClass = "tv-like-btn") {
+      const studentMode = isStudentTVMode();
+      const own = studentMode && isOwnResponse(row);
+      const liked = studentMode && hasLiked(row);
+
+      return [
+        baseClass,
+        studentMode && !own ? "clickable" : "",
+        liked ? "liked" : "",
+        own ? "own" : ""
+      ].filter(Boolean).join(" ");
+    }
+
+    function likeButtonTitle(row) {
+      if (isStudentTVMode() && isOwnResponse(row)) {
+        return "자신이 쓴 의견에는 공감할 수 없습니다.";
+      }
+
+      return isStudentTVMode() ? "공감하거나 공감을 취소합니다." : "공감 수";
+    }
+
+    function refreshTVModalLike(responseId) {
+      const row = tvRows.find(item => item.id === responseId);
+      const button = $("tvModalLikeBtn");
+
+      if (!row || !button) return;
+
+      const own = isStudentTVMode() && isOwnResponse(row);
+      button.textContent = likeLabel(row);
+      button.className = likeButtonClass(row, "tv-modal-like-btn");
+      button.dataset.likeId = row.id;
+      button.title = likeButtonTitle(row);
+      button.disabled = !!own;
+    }
+
+    function refreshOpenTVModal() {
+      if (!$("tvModal").classList.contains("hidden") && tvModalResponseId) {
+        const row = tvRows.find(item => item.id === tvModalResponseId);
+
+        if (row) {
+          $("tvModalName").textContent = row.nickname || "이름 없음";
+          $("tvModalScore").textContent = `${row.score}점`;
+          $("tvModalText").textContent = row.opinion || "(의견 없음)";
+          $("tvModalTime").textContent = formatShortTime(row.createdAt);
+          refreshTVModalLike(row.id);
+        }
+      }
+    }
+
     window.toggleTVLike = async function(responseId) {
       if (!tvSessionId || !responseId || !isStudentTVMode()) return;
 
@@ -2851,17 +2958,31 @@
 
       const deviceId = getDeviceId();
       const likeRef = ref(db, `sessions/${tvSessionId}/responses/${responseId}/likes/${deviceId}`);
+      const beforeLikes = { ...likeMap(row) };
+      const wasLiked = !!beforeLikes[deviceId];
+
+      row.likes = { ...beforeLikes };
+
+      if (wasLiked) {
+        delete row.likes[deviceId];
+      } else {
+        row.likes[deviceId] = true;
+      }
+
+      renderTVOpinionCards();
+      refreshOpenTVModal();
 
       try {
-        const snap = await get(likeRef);
-
-        if (snap.exists()) {
+        if (wasLiked) {
           await remove(likeRef);
         } else {
           await set(likeRef, true);
         }
       } catch (error) {
         console.error(error);
+        row.likes = beforeLikes;
+        renderTVOpinionCards();
+        refreshOpenTVModal();
         alert("공감 표시를 저장하지 못했습니다. 다시 시도하세요.");
       }
     };
@@ -2937,16 +3058,19 @@
 
       if (!row) return;
 
+      tvModalResponseId = responseId;
       const band = getScoreBand(row.score);
       $("tvModalCard").className = `tv-modal-card ${band.noteClass}`;
       $("tvModalName").textContent = row.nickname || "이름 없음";
       $("tvModalScore").textContent = `${row.score}점`;
       $("tvModalText").textContent = row.opinion || "(의견 없음)";
       $("tvModalTime").textContent = formatShortTime(row.createdAt);
+      refreshTVModalLike(responseId);
       $("tvModal").classList.remove("hidden");
     }
 
     function closeTVResponseModal() {
+      tvModalResponseId = "";
       $("tvModal").classList.add("hidden");
     }
 
@@ -2954,6 +3078,10 @@
     window.closeTVResponseModal = closeTVResponseModal;
 
     $("tvModalClose").addEventListener("click", closeTVResponseModal);
+    $("tvModalLikeBtn").addEventListener("click", (event) => {
+      event.stopPropagation();
+      toggleTVLike($("tvModalLikeBtn").dataset.likeId);
+    });
     $("tvModal").addEventListener("click", (event) => {
       if (event.target.id === "tvModal") {
         closeTVResponseModal();
@@ -2986,18 +3114,9 @@
 
       $("tvOpinionBoard").innerHTML = filtered.map(row => {
         const band = getScoreBand(row.score);
-        const studentMode = isStudentTVMode();
-        const own = studentMode && isOwnResponse(row);
-        const liked = studentMode && hasLiked(row);
-        const likeClass = [
-          "tv-like-btn",
-          studentMode && !own ? "clickable" : "",
-          liked ? "liked" : "",
-          own ? "own" : ""
-        ].filter(Boolean).join(" ");
-        const likeTitle = own
-          ? "자신이 쓴 의견에는 공감할 수 없습니다."
-          : (studentMode ? "공감하거나 공감을 취소합니다." : "공감 수");
+        const own = isStudentTVMode() && isOwnResponse(row);
+        const likeClass = likeButtonClass(row, "tv-like-btn");
+        const likeTitle = likeButtonTitle(row);
 
         return `
           <article class="tv-note ${band.noteClass}" data-response-id="${escapeHTML(row.id)}" title="클릭하면 응답을 크게 볼 수 있습니다.">
@@ -3038,6 +3157,7 @@
 
       if (isStudentTVMode() && !resultOpen) {
         tvRows = [];
+        closeTVResponseModal();
         renderTVPrivateForStudent(tvMeta, sessionId);
         return;
       }
@@ -3059,11 +3179,11 @@
       $("tvMin").textContent = String(min);
 
       tvRows = rows;
-      tvFilter = "all";
 
       renderTVDistribution(rows);
       renderTVFilters(rows);
       renderTVOpinionCards();
+      refreshOpenTVModal();
     }
 
 

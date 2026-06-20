@@ -907,6 +907,35 @@
     }
 
 
+    .student-result-btn {
+      margin-top: 10px;
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      padding: 13px;
+      background: #273c75;
+      color: white;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(39,60,117,0.16);
+    }
+
+    .student-result-btn:disabled {
+      background: #cbd5e1;
+      color: #64748b;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .student-result-notice {
+      margin-top: 8px;
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+
     body.tv-mode {
       background: #0f172a;
       overflow: hidden;
@@ -1015,6 +1044,102 @@
       border-radius: 999px;
       background: #60a5fa;
       box-shadow: 0 0 14px #60a5fa;
+    }
+
+
+    .result-open-control {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 10px 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.16);
+      color: #e5e7eb;
+      white-space: nowrap;
+    }
+
+    .result-open-label {
+      font-size: 15px;
+      font-weight: 1000;
+      color: #dbeafe;
+    }
+
+    .result-open-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 128px;
+      height: 32px;
+      padding: 3px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.50);
+      gap: 3px;
+    }
+
+    .result-open-choice {
+      border: 0;
+      border-radius: 999px;
+      padding: 0;
+      background: transparent;
+      color: #cbd5e1;
+      font-size: 13px;
+      font-weight: 1000;
+      line-height: 26px;
+      cursor: pointer;
+    }
+
+    .result-open-choice.open.active {
+      background: #38bdf8;
+      color: #082f49;
+      box-shadow: 0 0 16px rgba(56,189,248,0.26);
+    }
+
+    .result-open-choice.close.active {
+      background: #fb7185;
+      color: #fff1f2;
+      box-shadow: 0 0 16px rgba(251,113,133,0.24);
+    }
+
+    body.tv-student-mode .result-open-control {
+      display: none;
+    }
+
+    .tv-like-btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 3px 7px;
+      min-width: 30px;
+      background: rgba(255,255,255,0.58);
+      color: #1f2937;
+      font-size: 12px;
+      font-weight: 1000;
+      line-height: 1.2;
+      cursor: default;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      white-space: nowrap;
+    }
+
+    .tv-like-btn.clickable {
+      cursor: pointer;
+    }
+
+    .tv-like-btn.clickable:hover {
+      background: rgba(255,255,255,0.86);
+      transform: translateY(-1px);
+    }
+
+    .tv-like-btn.liked {
+      background: #2563eb;
+      color: white;
+      box-shadow: 0 3px 9px rgba(37,99,235,0.20);
+    }
+
+    .tv-like-btn.own {
+      opacity: 0.48;
+      cursor: not-allowed;
     }
 
     .tv-layout {
@@ -1309,7 +1434,7 @@
     .tv-note-foot {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: space-between;
       gap: 8px;
       color: #64748b;
       font-size: 11px;
@@ -1804,7 +1929,109 @@
         flex-direction: column;
       }
 
-      .tv-layout {
+      .result-open-control {
+        width: 100%;
+        justify-content: space-between;
+        box-sizing: border-box;
+      }
+
+  
+    .result-open-control {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 10px 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.16);
+      color: #e5e7eb;
+      white-space: nowrap;
+    }
+
+    .result-open-label {
+      font-size: 15px;
+      font-weight: 1000;
+      color: #dbeafe;
+    }
+
+    .result-open-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 128px;
+      height: 32px;
+      padding: 3px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.50);
+      gap: 3px;
+    }
+
+    .result-open-choice {
+      border: 0;
+      border-radius: 999px;
+      padding: 0;
+      background: transparent;
+      color: #cbd5e1;
+      font-size: 13px;
+      font-weight: 1000;
+      line-height: 26px;
+      cursor: pointer;
+    }
+
+    .result-open-choice.open.active {
+      background: #38bdf8;
+      color: #082f49;
+      box-shadow: 0 0 16px rgba(56,189,248,0.26);
+    }
+
+    .result-open-choice.close.active {
+      background: #fb7185;
+      color: #fff1f2;
+      box-shadow: 0 0 16px rgba(251,113,133,0.24);
+    }
+
+    body.tv-student-mode .result-open-control {
+      display: none;
+    }
+
+    .tv-like-btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 3px 7px;
+      min-width: 30px;
+      background: rgba(255,255,255,0.58);
+      color: #1f2937;
+      font-size: 12px;
+      font-weight: 1000;
+      line-height: 1.2;
+      cursor: default;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      white-space: nowrap;
+    }
+
+    .tv-like-btn.clickable {
+      cursor: pointer;
+    }
+
+    .tv-like-btn.clickable:hover {
+      background: rgba(255,255,255,0.86);
+      transform: translateY(-1px);
+    }
+
+    .tv-like-btn.liked {
+      background: #2563eb;
+      color: white;
+      box-shadow: 0 3px 9px rgba(37,99,235,0.20);
+    }
+
+    .tv-like-btn.own {
+      opacity: 0.48;
+      cursor: not-allowed;
+    }
+
+    .tv-layout {
         grid-template-columns: 1fr;
         width: 100% !important;
         max-width: none !important;
@@ -1879,6 +2106,12 @@
       <textarea id="opinion" maxlength="500" placeholder="오늘의 기분, 좋았던 점, 아쉬웠던 점, 바라는 점을 자유롭게 적으세요."></textarea>
 
       <button class="primary" id="submitBtn" onclick="submitResponse()">제출하기</button>
+      <button class="student-result-btn" id="studentResultBtn" type="button" onclick="openStudentResultView()" disabled>
+        친구 의견 보기
+      </button>
+      <div id="studentResultNotice" class="student-result-notice">
+        선생님이 결과를 공개하면 친구들의 의견을 보고 공감할 수 있습니다.
+      </div>
 
       <div id="studentMessage"></div>
     </section>
@@ -2052,7 +2285,13 @@
         <h1 id="tvTitle">Feel Score 결과</h1>
         <p id="tvSubtitle">회차 정보를 불러오고 있습니다.</p>
       </div>
-      <div class="tv-status"><span class="tv-status-dot"></span>TV 공유 화면</div>
+      <div id="resultOpenControl" class="result-open-control">
+        <span class="result-open-label">결과 보기</span>
+        <div class="result-open-switch">
+          <button type="button" id="openResultBtn" class="result-open-choice open" onclick="setResultOpenMode(true)" title="학생들이 친구 의견을 보고 공감할 수 있게 공개합니다.">공개</button>
+          <button type="button" id="closeResultBtn" class="result-open-choice close active" onclick="setResultOpenMode(false)" title="학생들이 친구 의견을 볼 수 없게 비공개로 둡니다.">비공개</button>
+        </div>
+      </div>
     </header>
 
     <div class="tv-layout">
@@ -2436,17 +2675,40 @@
 
     let tvRows = [];
     let tvFilter = "all";
+    let tvSessionId = "";
+    let tvMeta = {};
+    let currentResultOpen = false;
 
     function isTVMode() {
       return new URLSearchParams(location.search).get("view") === "tv";
     }
 
-    function tvUrl(sessionId) {
-      return `${fixedStudentUrl()}?view=tv&session=${encodeURIComponent(sessionId)}`;
+    function isStudentTVMode() {
+      const params = new URLSearchParams(location.search);
+      return params.get("student") === "1" || params.get("mode") === "student";
+    }
+
+    function tvUrl(sessionId, studentMode = false) {
+      const studentPart = studentMode ? "&student=1" : "";
+      return `${fixedStudentUrl()}?view=tv&session=${encodeURIComponent(sessionId)}${studentPart}`;
     }
 
     window.openTVView = function(sessionId) {
       window.open(tvUrl(sessionId), "_blank", "noopener,noreferrer");
+    };
+
+    window.openStudentResultView = function() {
+      if (!activeSessionId) {
+        showMessage("studentMessage", "아직 볼 수 있는 회차가 없습니다. 선생님께 확인하세요.", "error");
+        return;
+      }
+
+      if (!currentResultOpen) {
+        showMessage("studentMessage", "친구 의견 보기는 선생님이 결과를 공개하면 열립니다.", "error");
+        return;
+      }
+
+      location.href = tvUrl(activeSessionId, true);
     };
 
     window.openCurrentTVView = async function() {
@@ -2507,6 +2769,120 @@
       const counts = getTVBandCounts(rows);
       return TV_BANDS.filter(band => (counts[band.key] || 0) > 0);
     }
+
+
+    function setResultOpenUI(isOpen) {
+      const openBtn = $("openResultBtn");
+      const closeBtn = $("closeResultBtn");
+
+      if (!openBtn || !closeBtn) return;
+
+      openBtn.classList.toggle("active", !!isOpen);
+      closeBtn.classList.toggle("active", !isOpen);
+    }
+
+    function updateStudentResultButton(sessionId, resultOpen) {
+      const button = $("studentResultBtn");
+      const notice = $("studentResultNotice");
+
+      if (!button || !notice) return;
+
+      currentResultOpen = !!resultOpen;
+
+      if (!sessionId) {
+        button.disabled = true;
+        button.textContent = "친구 의견 보기";
+        notice.textContent = "아직 볼 수 있는 회차가 없습니다. 선생님께 확인하세요.";
+        return;
+      }
+
+      if (resultOpen) {
+        button.disabled = false;
+        button.textContent = "친구 의견 보기";
+        notice.textContent = "친구들의 의견을 보고 공감할 수 있습니다.";
+      } else {
+        button.disabled = true;
+        button.textContent = "친구 의견 보기";
+        notice.textContent = "선생님이 결과를 공개하면 친구들의 의견을 보고 공감할 수 있습니다.";
+      }
+    }
+
+    window.setResultOpenMode = async function(isOpen) {
+      if (!tvSessionId) return;
+
+      try {
+        await update(ref(db, `sessions/${tvSessionId}/meta`), {
+          resultOpen: !!isOpen,
+          updatedAt: Date.now()
+        });
+        setResultOpenUI(!!isOpen);
+      } catch (error) {
+        console.error(error);
+        alert("결과 공개 설정을 저장하지 못했습니다. Firebase 설정을 확인하세요.");
+      }
+    };
+
+    function likeMap(row) {
+      return row && row.likes && typeof row.likes === "object" ? row.likes : {};
+    }
+
+    function likeCount(row) {
+      return Object.keys(likeMap(row)).length;
+    }
+
+    function hasLiked(row) {
+      return !!likeMap(row)[getDeviceId()];
+    }
+
+    function isOwnResponse(row) {
+      return !!row.deviceId && row.deviceId === getDeviceId();
+    }
+
+    function likeLabel(row) {
+      const count = likeCount(row);
+      return count > 0 ? `👍 ${count}` : "👍";
+    }
+
+    window.toggleTVLike = async function(responseId) {
+      if (!tvSessionId || !responseId || !isStudentTVMode()) return;
+
+      const row = tvRows.find(item => item.id === responseId);
+      if (!row || isOwnResponse(row)) return;
+
+      const deviceId = getDeviceId();
+      const likeRef = ref(db, `sessions/${tvSessionId}/responses/${responseId}/likes/${deviceId}`);
+
+      try {
+        const snap = await get(likeRef);
+
+        if (snap.exists()) {
+          await remove(likeRef);
+        } else {
+          await set(likeRef, true);
+        }
+      } catch (error) {
+        console.error(error);
+        alert("공감 표시를 저장하지 못했습니다. 다시 시도하세요.");
+      }
+    };
+
+    function renderTVPrivateForStudent(meta, sessionId) {
+      const title = meta.title || "Feel Score";
+      const created = meta.createdAt ? formatTime(meta.createdAt) : "-";
+
+      $("tvTitle").textContent = `${title} 결과`;
+      $("tvSubtitle").textContent = `${created} · 회차 코드 ${sessionId}`;
+      $("tvAvgScore").textContent = "-";
+      $("tvCount").textContent = "0";
+      $("tvMedian").textContent = "-";
+      $("tvMax").textContent = "-";
+      $("tvMin").textContent = "-";
+      $("tvDistribution").innerHTML = `<div class="tv-loading">선생님이 결과를 공개하면 점수 분포를 볼 수 있습니다.</div>`;
+      $("tvFilters").innerHTML = "";
+      $("tvEmptyMessage").classList.remove("show");
+      $("tvOpinionBoard").innerHTML = `<div class="tv-loading">아직 친구 의견 보기가 열리지 않았습니다.</div>`;
+    }
+
 
     function renderTVDistribution(rows) {
       const counts = getTVBandCounts(rows);
@@ -2610,6 +2986,18 @@
 
       $("tvOpinionBoard").innerHTML = filtered.map(row => {
         const band = getScoreBand(row.score);
+        const studentMode = isStudentTVMode();
+        const own = studentMode && isOwnResponse(row);
+        const liked = studentMode && hasLiked(row);
+        const likeClass = [
+          "tv-like-btn",
+          studentMode && !own ? "clickable" : "",
+          liked ? "liked" : "",
+          own ? "own" : ""
+        ].filter(Boolean).join(" ");
+        const likeTitle = own
+          ? "자신이 쓴 의견에는 공감할 수 없습니다."
+          : (studentMode ? "공감하거나 공감을 취소합니다." : "공감 수");
 
         return `
           <article class="tv-note ${band.noteClass}" data-response-id="${escapeHTML(row.id)}" title="클릭하면 응답을 크게 볼 수 있습니다.">
@@ -2619,6 +3007,7 @@
             </div>
             <p class="tv-note-text">${escapeHTML(row.opinion)}</p>
             <div class="tv-note-foot">
+              <button type="button" class="${likeClass}" data-like-id="${escapeHTML(row.id)}" title="${likeTitle}" ${own ? "disabled" : ""}>${likeLabel(row)}</button>
               <span>${formatShortTime(row.createdAt)}</span>
             </div>
           </article>
@@ -2630,11 +3019,31 @@
           openTVResponseModal(card.dataset.responseId);
         });
       });
+
+      document.querySelectorAll(".tv-like-btn").forEach(button => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          toggleTVLike(button.dataset.likeId);
+        });
+      });
     }
 
     function renderTVPage(meta, rows, sessionId) {
-      const title = meta.title || "Feel Score";
-      const created = meta.createdAt ? formatTime(meta.createdAt) : "-";
+      tvMeta = meta || {};
+      tvSessionId = sessionId || tvSessionId;
+      const resultOpen = tvMeta.resultOpen === true;
+
+      document.body.classList.toggle("tv-student-mode", isStudentTVMode());
+      setResultOpenUI(resultOpen);
+
+      if (isStudentTVMode() && !resultOpen) {
+        tvRows = [];
+        renderTVPrivateForStudent(tvMeta, sessionId);
+        return;
+      }
+
+      const title = tvMeta.title || "Feel Score";
+      const created = tvMeta.createdAt ? formatTime(tvMeta.createdAt) : "-";
       const scores = rows.map(row => row.score).filter(score => !Number.isNaN(score));
       const count = rows.length;
       const avg = scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : "-";
@@ -2680,6 +3089,7 @@
       if (!isTVMode()) return;
 
       document.body.classList.add("tv-mode");
+      document.body.classList.toggle("tv-student-mode", isStudentTVMode());
       updateTVViewportFit();
       document.querySelector("body > header")?.classList.add("hidden");
       document.querySelector("body > main")?.classList.add("hidden");
@@ -2701,21 +3111,44 @@
           return;
         }
 
-        const metaSnap = await get(ref(db, `sessions/${sessionId}/meta`));
-        const responsesSnap = await get(ref(db, `sessions/${sessionId}/responses`));
-        const meta = metaSnap.val() || {};
-        const data = responsesSnap.val() || {};
+        tvSessionId = sessionId;
+        let latestMeta = {};
+        let latestRows = [];
 
-        const rows = Object.entries(data).map(([id, item]) => ({
-          id,
-          nickname: item.nickname || "",
-          score: Number(item.score),
-          opinion: item.opinion || "",
-          createdAt: item.createdAt || 0
-        })).sort((a, b) => b.createdAt - a.createdAt);
+        const rerender = () => {
+          renderTVPage(latestMeta, latestRows, sessionId);
+          updateTVViewportFit();
+        };
 
-        renderTVPage(meta, rows, sessionId);
-        updateTVViewportFit();
+        onValue(ref(db, `sessions/${sessionId}/meta`), (metaSnap) => {
+          latestMeta = metaSnap.val() || {};
+          rerender();
+        }, (error) => {
+          console.error(error);
+          $("tvSubtitle").textContent = "결과를 불러오지 못했습니다.";
+          $("tvDistribution").innerHTML = `<div class="tv-loading">Firebase 설정과 Database 규칙을 확인하세요.</div>`;
+          $("tvOpinionBoard").innerHTML = `<div class="tv-loading">Firebase 설정과 Database 규칙을 확인하세요.</div>`;
+        });
+
+        onValue(ref(db, `sessions/${sessionId}/responses`), (responsesSnap) => {
+          const data = responsesSnap.val() || {};
+          latestRows = Object.entries(data).map(([id, item]) => ({
+            id,
+            nickname: item.nickname || "",
+            score: Number(item.score),
+            opinion: item.opinion || "",
+            createdAt: item.createdAt || 0,
+            deviceId: item.deviceId || "",
+            likes: item.likes || {}
+          })).sort((a, b) => b.createdAt - a.createdAt);
+
+          rerender();
+        }, (error) => {
+          console.error(error);
+          $("tvSubtitle").textContent = "결과를 불러오지 못했습니다.";
+          $("tvDistribution").innerHTML = `<div class="tv-loading">Firebase 설정과 Database 규칙을 확인하세요.</div>`;
+          $("tvOpinionBoard").innerHTML = `<div class="tv-loading">Firebase 설정과 Database 규칙을 확인하세요.</div>`;
+        });
       } catch (error) {
         console.error(error);
         $("tvSubtitle").textContent = "결과를 불러오지 못했습니다.";
@@ -2983,7 +3416,8 @@
           nickname,
           score,
           opinion,
-          createdAt: Date.now()
+          createdAt: Date.now(),
+          deviceId: getDeviceId()
         });
 
         localStorage.setItem(submittedStorageKey(sessionId), "true");
@@ -3055,6 +3489,7 @@
           title,
           opinionPlaceholder,
           allowDeviceDuplicate,
+          resultOpen: false,
           createdAt: Date.now(),
           updatedAt: Date.now(),
           isOpen: true
@@ -3577,12 +4012,14 @@
             const activeDate = meta.createdAt ? formatTime(meta.createdAt) : "-";
 
             const allowDeviceDuplicate = meta.allowDeviceDuplicate !== false;
+            const resultOpen = meta.resultOpen === true;
 
             $("opinion").placeholder = meta.opinionPlaceholder || DEFAULT_OPINION_PLACEHOLDER;
             updateStudentDuplicateStatus(activeSessionId, allowDeviceDuplicate);
+            updateStudentResultButton(activeSessionId, resultOpen);
             $("activeSessionInfo").innerHTML = `
               현재 활성화된 회차: <strong>${escapeHTML(activeTitle)} · ${escapeHTML(activeDate)}</strong><br>
-              <span class="muted">회차 코드 ${escapeHTML(activeSessionId)} · 학생들이 지금 제출하면 이 회차에 저장됩니다. · 동일 기기 중복 ${allowDeviceDuplicate ? "허용" : "차단"}</span>
+              <span class="muted">회차 코드 ${escapeHTML(activeSessionId)} · 학생들이 지금 제출하면 이 회차에 저장됩니다. · 동일 기기 중복 ${allowDeviceDuplicate ? "허용" : "차단"} · 친구 의견 보기 ${resultOpen ? "공개" : "비공개"}</span>
             `;
             renderSessionList();
           });
@@ -3593,6 +4030,7 @@
           $("activeSessionInfo").textContent = "현재 활성화된 학생 입력 회차가 없습니다.";
           $("opinion").placeholder = DEFAULT_OPINION_PLACEHOLDER;
           $("submitBtn").disabled = true;
+          updateStudentResultButton("", false);
           renderSessionList();
         }
       }, (error) => {

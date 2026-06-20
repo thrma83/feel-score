@@ -1303,10 +1303,72 @@
       gap: 12px;
     }
 
+    .tv-board-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+
     .tv-board-head h2 {
       margin: 0;
       font-size: 26px;
       letter-spacing: -0.3px;
+      white-space: nowrap;
+    }
+
+    .tv-sort-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 7px 5px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: #dbeafe;
+      white-space: nowrap;
+    }
+
+    .tv-sort-label {
+      font-size: 12px;
+      font-weight: 1000;
+      color: #cbd5e1;
+    }
+
+    .tv-sort-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 116px;
+      height: 28px;
+      padding: 3px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.46);
+      gap: 3px;
+    }
+
+    .tv-sort-choice {
+      border: 0;
+      border-radius: 999px;
+      padding: 0;
+      background: transparent;
+      color: #cbd5e1;
+      font-size: 12px;
+      font-weight: 1000;
+      line-height: 22px;
+      cursor: pointer;
+    }
+
+    .tv-sort-choice.latest.active {
+      background: #60a5fa;
+      color: #082f49;
+      box-shadow: 0 0 14px rgba(96,165,250,0.24);
+    }
+
+    .tv-sort-choice.likes.active {
+      background: #fbbf24;
+      color: #422006;
+      box-shadow: 0 0 14px rgba(251,191,36,0.24);
     }
 
     .tv-filter-chips {
@@ -1980,6 +2042,25 @@
         box-sizing: border-box;
       }
 
+      .tv-board-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .tv-board-title-row {
+        width: 100%;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .tv-board-head h2 {
+        font-size: 21px;
+      }
+
+      .tv-sort-control {
+        padding: 4px 6px 4px 9px;
+      }
+
   
     .result-open-control {
       display: flex;
@@ -2376,8 +2457,15 @@
 
       <section class="tv-panel tv-board-panel">
         <div class="tv-board-head">
-          <div>
+          <div class="tv-board-title-row">
             <h2>서술형 응답 보드</h2>
+            <div class="tv-sort-control">
+              <span class="tv-sort-label">정렬</span>
+              <div class="tv-sort-switch">
+                <button type="button" id="tvSortLatestBtn" class="tv-sort-choice latest active" onclick="setTVSortMode('latest')" title="최근에 제출된 의견부터 보여줍니다.">최신순</button>
+                <button type="button" id="tvSortLikesBtn" class="tv-sort-choice likes" onclick="setTVSortMode('likes')" title="공감 수가 많은 의견부터 보여줍니다.">공감순</button>
+              </div>
+            </div>
           </div>
           <div id="tvFilters" class="tv-filter-chips"></div>
         </div>
@@ -2732,6 +2820,7 @@
 
     let tvRows = [];
     let tvFilter = "all";
+    let tvSortMode = "latest";
     let tvSessionId = "";
     let tvMeta = {};
     let tvModalResponseId = "";
@@ -2969,6 +3058,10 @@
         row.likes[deviceId] = true;
       }
 
+      if (tvModalResponseId === responseId) {
+        refreshTVModalLike(responseId);
+      }
+
       renderTVOpinionCards();
       refreshOpenTVModal();
 
@@ -2981,6 +3074,11 @@
       } catch (error) {
         console.error(error);
         row.likes = beforeLikes;
+
+        if (tvModalResponseId === responseId) {
+          refreshTVModalLike(responseId);
+        }
+
         renderTVOpinionCards();
         refreshOpenTVModal();
         alert("공감 표시를 저장하지 못했습니다. 다시 시도하세요.");
@@ -3000,6 +3098,7 @@
       $("tvMin").textContent = "-";
       $("tvDistribution").innerHTML = `<div class="tv-loading">선생님이 결과를 공개하면 점수 분포를 볼 수 있습니다.</div>`;
       $("tvFilters").innerHTML = "";
+      updateTVSortUI();
       $("tvEmptyMessage").classList.remove("show");
       $("tvOpinionBoard").innerHTML = `<div class="tv-loading">아직 친구 의견 보기가 열리지 않았습니다.</div>`;
     }
@@ -3028,6 +3127,43 @@
           </div>
         `;
       }).join("");
+    }
+
+
+    function updateTVSortUI() {
+      const latestBtn = $("tvSortLatestBtn");
+      const likesBtn = $("tvSortLikesBtn");
+
+      if (!latestBtn || !likesBtn) return;
+
+      latestBtn.classList.toggle("active", tvSortMode === "latest");
+      likesBtn.classList.toggle("active", tvSortMode === "likes");
+    }
+
+    window.setTVSortMode = function(mode) {
+      tvSortMode = mode === "likes" ? "likes" : "latest";
+      updateTVSortUI();
+      renderTVOpinionCards();
+      refreshOpenTVModal();
+    };
+
+    function sortTVRows(rows) {
+      const copied = [...rows];
+
+      if (tvSortMode === "likes") {
+        copied.sort((a, b) => {
+          const likeDiff = likeCount(b) - likeCount(a);
+
+          if (likeDiff !== 0) return likeDiff;
+
+          return (b.createdAt || 0) - (a.createdAt || 0);
+        });
+
+        return copied;
+      }
+
+      copied.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      return copied;
     }
 
     function renderTVFilters(rows) {
@@ -3096,10 +3232,10 @@
     });
 
     function renderTVOpinionCards() {
-      const filtered = tvRows.filter(row => {
+      const filtered = sortTVRows(tvRows.filter(row => {
         if (tvFilter === "all") return true;
         return getScoreBand(row.score).key === tvFilter;
-      });
+      }));
 
       document.querySelectorAll(".tv-chip").forEach(button => {
         button.classList.toggle("active", button.dataset.filter === tvFilter);
@@ -3182,6 +3318,7 @@
 
       renderTVDistribution(rows);
       renderTVFilters(rows);
+      updateTVSortUI();
       renderTVOpinionCards();
       refreshOpenTVModal();
     }
